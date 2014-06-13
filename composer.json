@@ -1,0 +1,23 @@
+{
+  "name": "statical/statical",
+  "description": "Static proxy implementation",
+  "keywords": ["static", "facade", "static proxy", "static interface", "statical"],
+  "homepage": "http://github.com/johnstevenson/statical",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "John Stevenson",
+      "email": "john-stevenson@blueyonder.co.uk"
+    }
+  ],
+
+  "require": {
+    "php": ">=5.3.3"
+  },
+
+  "autoload": {
+    "psr-4": {
+        "Statical\\": "src"
+    }
+  }
+}
