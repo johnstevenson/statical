@@ -15,3 +15,5 @@ matrix:
 before_script:
   - composer self-update
   - composer install --no-interaction
+
+script: vendor/bin/phpunit
