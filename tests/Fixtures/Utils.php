@@ -59,6 +59,10 @@ class Utils
 
     public static function appLoader($class)
     {
+        if ('\\' == $class[0]) {
+            $class = substr($class, 1);
+        }
+
         if (0 === strpos($class, 'App\\')) {
             $file = str_replace('\\', '/', __DIR__ .'/'.$class).'.php';
 
