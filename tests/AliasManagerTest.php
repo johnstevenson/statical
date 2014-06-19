@@ -32,6 +32,10 @@ class AliasManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->manager->aliases[$alias], $original);
     }
 
+    /**
+    * Test that getNamespaceAlias matches root
+    *
+    */
     public function testGetNamespaceAlias()
     {
         $original = 'Statical\\Tests\\Fixtures\\Foo';
@@ -43,6 +47,10 @@ class AliasManagerTest extends \PHPUnit_Framework_TestCase
             $this->manager->getNamespaceAlias('Bar\\Baz\\Foo'));
     }
 
+    /**
+    * Test that getNamespaceAlias returns null when it doesn't match
+    *
+    */
     public function testGetNamespaceAliasReturnsNull()
     {
         $original = 'Statical\\Tests\\Fixtures\\Foo';
@@ -55,7 +63,7 @@ class AliasManagerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-    * Test we can enable the autoloader without namespacing.
+    * Test we can enable the autoloader.
     *
     */
     public function testEnable()
@@ -64,28 +72,14 @@ class AliasManagerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($this->loaderRegistered());
         $this->assertTrue($this->loaderLast());
-        $this->assertFalse($this->usingNamespacing());
-    }
-
-    /**
-    * Test we can enable the autoloader with namespacing.
-    *
-    */
-    public function testEnableUseNamespacing()
-    {
-        $this->manager->enable(true);
-
-        $this->assertTrue($this->loaderRegistered());
-        $this->assertTrue($this->loaderLast());
         $this->assertTrue($this->usingNamespacing());
     }
 
     /**
-    * Test that updating a non-namespacing enable without namespacing does not
-    * re-register the autoloader on the end.
+    * Test that updating enable re-registers the autoloader on the end.
     *
     * We can check this by registering a new autoloader then checking that the
-    * position of ours has not changed.
+    * position of ours has changed.
     */
     public function testEnableUpdate()
     {
@@ -93,35 +87,6 @@ class AliasManagerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($this->loaderRegistered());
         $this->assertTrue($this->loaderLast());
-        $this->assertFalse($this->usingNamespacing());
-
-        Utils::registerAppLoader();
-
-        // test that the loader is still registered and is no longer at the end
-        $this->assertTrue($this->loaderRegistered());
-        $this->assertFalse($this->loaderLast());
-
-        $this->manager->enable();
-        $this->assertTrue($this->loaderRegistered());
-
-        // test that the loader has not been re-registered on the end
-        $this->assertFalse($this->loaderLast());
-        $this->assertFalse($this->usingNamespacing());
-    }
-
-    /**
-    * Test that updating a namespacing enable with namespacing re-registers the
-    * autoloader on the end.
-    *
-    * We can check this by registering a new autoloader then checking that the
-    * position of ours has changed.
-    */
-    public function testEnableUpdateNamespacing()
-    {
-        $this->manager->enable(true);
-
-        $this->assertTrue($this->loaderRegistered());
-        $this->assertTrue($this->loaderLast());
         $this->assertTrue($this->usingNamespacing());
 
         Utils::registerAppLoader();
@@ -130,88 +95,27 @@ class AliasManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->loaderRegistered());
         $this->assertFalse($this->loaderLast());
 
-        $this->manager->enable(true);
+        $this->manager->enable();
         $this->assertTrue($this->loaderRegistered());
 
         // test that the loader has been re-registered on the end
         $this->assertTrue($this->loaderLast());
         $this->assertTrue($this->usingNamespacing());
-    }
 
-    /**
-    * Test that updating a non-namespacing enable with namespacing re-registers
-    * the autoloader on the end.
-    *
-    * We can check this by registering a new autoloader then checking that the
-    * position of ours has changed.
-    */
-    public function testEnableUpdateAddNamespacing()
-    {
+        // test that everything is correct after enabling
         $this->manager->enable();
-
         $this->assertTrue($this->loaderRegistered());
         $this->assertTrue($this->loaderLast());
-        $this->assertFalse($this->usingNamespacing());
-
-        Utils::registerAppLoader();
-
-        // test that the loader is still registered and is no longer at the end
-        $this->assertTrue($this->loaderRegistered());
-        $this->assertFalse($this->loaderLast());
-
-        $this->manager->enable(true);
-
-        // test that the loader is still registered
-        $this->assertTrue($this->loaderRegistered());
-
-        // test that the loader has been re-registered on the end
-        $this->assertTrue($this->loaderLast());
-
-        // test that usingNamespacing has changed to true
         $this->assertTrue($this->usingNamespacing());
     }
 
     /**
-    * Test that updating a namespacing enable without namespacing does not make
-    * and changes.
-    *
-    * We can check this by registering a new autoloader then checking that the
-    * position of ours has changed and that namespacing is still enabled.
-    */
-    public function testEnableUpdateRemoveNamespacing()
-    {
-        $this->manager->enable(true);
-
-        $this->assertTrue($this->loaderRegistered());
-        $this->assertTrue($this->loaderLast());
-        $this->assertTrue($this->usingNamespacing());
-
-        Utils::registerAppLoader();
-
-        // test that the loader is still registered and is no longer at the end
-        $this->assertTrue($this->loaderRegistered());
-        $this->assertFalse($this->loaderLast());
-
-        // call enable without a usingNamespacing value
-        $this->manager->enable();
-
-        // test that the loader is still registered
-        $this->assertTrue($this->loaderRegistered());
-
-        // test that the loader has not been re-registered on the end
-        $this->assertFalse($this->loaderLast());
-
-        // test that usingNamespacing is still true
-        $this->assertTrue($this->usingNamespacing());
-    }
-
-    /**
-    * Test we can disable the autoloader and namespacing.
+    * Test we can disable the autoloader.
     *
     */
     public function testDisable()
     {
-        $this->manager->enable(true);
+        $this->manager->enable();
 
         $this->assertTrue($this->loaderRegistered());
         $this->assertTrue($this->loaderLast());
@@ -219,8 +123,7 @@ class AliasManagerTest extends \PHPUnit_Framework_TestCase
 
         $this->manager->disable();
         $this->assertFalse($this->loaderRegistered());
-        $this->assertFalse($this->usingNamespacing());
-
+        $this->assertTrue($this->usingNamespacing());
     }
 
     /**
@@ -229,7 +132,7 @@ class AliasManagerTest extends \PHPUnit_Framework_TestCase
     */
     public function testDisableNamespacing()
     {
-        $this->manager->enable(true);
+        $this->manager->enable();
 
         $this->assertTrue($this->loaderRegistered());
         $this->assertTrue($this->loaderLast());
@@ -255,7 +158,7 @@ class AliasManagerTest extends \PHPUnit_Framework_TestCase
             spl_autoload_unregister($loader);
         }
 
-        $this->manager->enable(true);
+        $this->manager->enable();
         $beforeCount = count(spl_autoload_functions());
 
         $this->manager->disable();

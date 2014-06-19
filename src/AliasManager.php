@@ -48,6 +48,7 @@
         $this->namespacer = new NamespaceManager();
         $this->aliasLoader = array($this, 'loader');
         $this->disable();
+        $this->useNamespacing = true;
     }
 
     /**
@@ -79,25 +80,14 @@
     /**
     * Enables static proxying by registering the autoloader.
     *
-    * If the autoloader has not been registered it will be added to the end of
-    * the stack and the internal useNamespacing flag will be appropriately set.
+    * Ensures that the autoloader is always at the end of the stack.
     *
-    * If the autoloader has already been registered, behaviour depends on the
-    * value of the $useNamespacing param.
-    *
-    * False: No-op. The autoloader will remain wherever it is on the stack and
-    * the internal useNamespacing flag will not be modified.
-    *
-    * True: The autoloader will always be added or moved to the end of the stack
-    * and the internal useNamespacing flag will set to true.
-    *
-    * @param boolean $useNamespacing
     * @return void
     */
-    public function enable($useNamespacing = false)
+    public function enable()
     {
         if ($this->isLoaderRegistered($last)) {
-            if (!$useNamespacing || $last) {
+            if ($last) {
                 return;
             }
 
@@ -105,7 +95,6 @@
         }
 
         spl_autoload_register($this->aliasLoader);
-        $this->useNamespacing = $useNamespacing;
     }
 
     /**
@@ -118,12 +107,12 @@
     */
     public function disable($onlyNamespacing = false)
     {
-        if (!$onlyNamespacing) {
+        if ($onlyNamespacing) {
+            $this->useNamespacing = false;
+        } else {
             spl_autoload_unregister($this->aliasLoader);
             $this->checkAutoloadStack();
         }
-
-        $this->useNamespacing = false;
     }
 
     /**

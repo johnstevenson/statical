@@ -32,7 +32,7 @@
     /**
     * The container instance
     *
-    * @var mixed
+    * @var callable
     */
     protected $container = array();
 
@@ -43,16 +43,16 @@
     */
     public static $singleton = false;
 
-    const SELF_PROXY = 'Statical\StaticalProxy';
-    const SELF_ALIAS = 'Statical';
+    const STATICAL_PROXY = 'Statical\StaticalProxy';
 
     /**
     * Constructor - will throw an exception if we have been set as a singleton.
     *
     * @param mixed $container
+    * @param array $config
     * @throws RuntimeException
     */
-    public function __construct($container = null)
+    public function __construct($container = null, array $config = array())
     {
         if (static::$singleton) {
             throw new \RuntimeException(__CLASS__ . ' has been set as a singleton.');
@@ -61,25 +61,23 @@
         BaseProxy::setResolver($this);
         $this->aliasManager = new AliasManager();
 
-        if (null !== $container) {
+        if ($config) {
+            $this->configure($config, $container);
+        } elseif ($container) {
             $this->setContainer($container);
         }
     }
 
     /**
-    * Registers ourself as a proxy.
+    * Registers ourself as a proxy, aliased as Statical and available in any namespace.
     *
-    * @param mixed $namespace
+    * @return void
     */
-    public function addProxySelf($namespace = null)
+    public function addProxySelf()
     {
-        $this->addProxyInstance(static::SELF_ALIAS, static::SELF_PROXY, $this);
-
-        if ($namespace) {
-            $this->addNamespace(static::SELF_ALIAS, $namespace);
-        }
-
-        $this->enable(true);
+        $this->addProxyInstance('Statical', static::STATICAL_PROXY, $this);
+        $this->addNamespace('Statical', '*');
+        $this->enable();
     }
 
     /**
@@ -141,6 +139,23 @@
     }
 
     /**
+    * Applies a set of proxy settings
+    *
+    * @param array $config
+    * @param mixed $container
+    * @return void
+    */
+    public function configure(array $config, $container = null)
+    {
+        if ($container) {
+            $this->setContainer($container);
+        }
+
+        $handler = new ConfigHandler($this);
+        $handler->apply($config, $this->container);
+    }
+
+    /**
     * Sets the default container for proxy services and returns the old one.
     *
     * This container is used if calls to addProxyService do not pass in a
@@ -152,43 +167,22 @@
     */
     public function setContainer($container)
     {
-        $result = $this->getContainer();
+        $result = $this->container;
         $this->container = Input::checkContainer($container);
 
         return $result;
     }
 
     /**
-    * Returns the current default container, or null
-    *
-    * @return callable|null
-    */
-    public function getContainer()
-    {
-        return $this->container;
-    }
-
-    /**
     * Enables static proxying by registering the autoloader.
     *
-    * If the autoloader has not been registered it will be added to the end of
-    * the stack and the internal useNamespacing flag will be appropriately set.
+    * Ensures that the autoloader is always at the end of the stack.
     *
-    * If the autoloader has already been registered, behaviour depends on the
-    * value of the $useNamespacing param.
-    *
-    * False: No-op. The autoloader will remain wherever it is on the stack and
-    * the internal useNamespacing flag will not be modified.
-    *
-    * True: The autoloader will always be added or moved to the end of the stack
-    * and the internal useNamespacing flag will set to true.
-    *
-    * @param boolean $useNamespacing
     * @return void
     */
-    public function enable($useNamespacing = false)
+    public function enable()
     {
-        $this->aliasManager->enable($useNamespacing);
+        $this->aliasManager->enable();
     }
 
     /**

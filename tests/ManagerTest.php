@@ -58,6 +58,86 @@ class ManagerTest extends TestBase
     }
 
     /**
+    * Test that config item is registered from the constructor
+    *
+    */
+    public function testConfigFromConstructor()
+    {
+        $container = Utils::container();
+        $config = array(
+            'services' => array(
+                'Foo' => 'Statical\\Tests\\Fixtures\\FooProxy'
+            )
+        );
+
+        $this->replaceManager($container, $config);
+
+        $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
+        $target = Utils::formatContainer($container);
+
+        $registry = $this->manager->registry;
+        $this->assertArrayHasKey($proxy, $registry);
+        $values = $registry[$proxy];
+
+        $this->assertSame('foo', $values['id']);
+        $this->assertSame($target, $values['target']);
+    }
+
+    /**
+    * Test that configure registers an item using the default container.
+    *
+    */
+    public function testConfigureDefaultContainer()
+    {
+        $container = Utils::container();
+        $this->manager->setContainer($container);
+
+        $config = array(
+            'services' => array(
+                'Foo' => 'Statical\\Tests\\Fixtures\\FooProxy'
+            )
+        );
+
+        $this->manager->configure($config);
+
+        $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
+        $target = Utils::formatContainer($container);
+
+        $registry = $this->manager->registry;
+        $this->assertArrayHasKey($proxy, $registry);
+        $values = $registry[$proxy];
+
+        $this->assertSame('foo', $values['id']);
+        $this->assertSame($target, $values['target']);
+    }
+
+    /**
+    * Test that configure registers an item with a container.
+    *
+    */
+    public function testConfigureWithContainer()
+    {
+        $container = Utils::container();
+        $config = array(
+            'services' => array(
+                'Foo' => 'Statical\\Tests\\Fixtures\\FooProxy'
+            )
+        );
+
+        $this->manager->configure($config, $container);
+
+        $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
+        $target = Utils::formatContainer($container);
+
+        $registry = $this->manager->registry;
+        $this->assertArrayHasKey($proxy, $registry);
+        $values = $registry[$proxy];
+
+        $this->assertSame('foo', $values['id']);
+        $this->assertSame($target, $values['target']);
+    }
+
+    /**
     * Test that proxy instance is registered correctly in the registry array.
     *
     */

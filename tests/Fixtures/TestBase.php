@@ -19,8 +19,8 @@ class TestBase extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function replaceManager($container = null)
+    public function replaceManager($container = null, $config = array())
     {
-        $this->manager = new Manager($container);
+        $this->manager = new Manager($container, $config);
     }
 }

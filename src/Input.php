@@ -87,7 +87,7 @@
     * Returns either the checked passed in container, or the default.
     *
     * @param mixed $container
-    * @param callable|null $default
+    * @param callable $default
     * @throws RuntimeException
     * @return callable
     */
@@ -98,6 +98,26 @@
         }
 
         return $container ? static::checkContainer($container) : $default;
+    }
+
+    /**
+    * Extracts a config value and checks its type against the default.
+    *
+    * @param array $config
+    * @param string $key
+    * @param mixed $default
+    * @throws InvalidArgumentException
+    * @return mixed
+    */
+    public static function checkConfig($config, $key, $default)
+    {
+        $value = isset($config[$key]) ? $config[$key] : $default;
+
+        if (gettype($default) !== gettype($value)) {
+            throw new \InvalidArgumentException('Invalid value for config ' . $key);
+        }
+
+        return $value;
     }
 
     /**
@@ -124,4 +144,6 @@
 
         return array($instance, $method);
     }
+
+
  }

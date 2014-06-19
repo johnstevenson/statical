@@ -42,7 +42,7 @@ class ProxyTest extends TestBase
     */
     public function testAddProxyInstanceWithNamespace()
     {
-        $this->manager->enable(true);
+        $this->manager->enable();
 
         $alias = 'Foo';
         $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
@@ -310,7 +310,7 @@ class ProxyTest extends TestBase
     */
     public function testAddProxyServiceWithNamespace()
     {
-        $this->manager->enable(true);
+        $this->manager->enable();
 
         $alias = 'Foo';
         $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
@@ -383,22 +383,12 @@ class ProxyTest extends TestBase
     }
 
     /**
-    * Test addProxySelf allows us to use Statical alias
+    * Test addProxySelf allows us to use Statical alias in any namespace
     *
     */
     public function testAddProxySelf()
     {
         $this->manager->addProxySelf();
-        $this->assertEquals('Hello', \Statical::sayHello());
-    }
-
-    /**
-    * Test addProxySelf allows us to use Statical alias in any namespace
-    *
-    */
-    public function testAddProxySelfWithNamespace()
-    {
-        $this->manager->addProxySelf('*');
-        $this->assertEquals('Hello', Statical::sayHello());
+        $this->assertSame($this->manager, Statical::getInstance());
     }
 }

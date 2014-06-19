@@ -174,7 +174,7 @@
     */
     protected function getNamespaceGroup($namespace)
     {
-        $namespace  = Input::checkNamespace($namespace);
+        $namespace = Input::checkNamespace($namespace);
 
         if ('*' === substr($namespace, -1)) {
             if ('*' === $namespace) {
