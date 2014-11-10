@@ -6,6 +6,7 @@ filter:
 tools:
     php_code_coverage:
         enabled: true
+        test_command: phpunit --colors --verbose
     php_sim:
         enabled: true
     php_pdepend:

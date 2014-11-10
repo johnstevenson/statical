@@ -57,13 +57,16 @@
     }
 
     /**
-    * Registers ourself as a proxy, aliased as Statical and available in any namespace.
+    * Registers ourself as a proxy and enables the service.
+    *
+    * The Manager is aliased as Statical and available in any namespace.
     *
     * @return void
     */
     public function addProxySelf()
     {
-        $this->addProxyInstance('Statical', 'Statical\\StaticalProxy', $this, '*');
+        $this->addProxyInstance('Statical', 'Statical\\StaticalProxy', $this);
+        $this->addNamespace('Statical', '*');
         $this->enable();
     }
 
