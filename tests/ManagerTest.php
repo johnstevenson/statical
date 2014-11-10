@@ -31,31 +31,6 @@ class ManagerTest extends TestBase
     }
 
     /**
-    * Test that configure registers an item with a container.
-    *
-    */
-    public function testConfigureWithContainer()
-    {
-        $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
-        $container = Utils::container();
-
-        $config['services'] = array();
-        $config['services'][] = array('Foo', $proxy);
-        $config['container'] = $container;
-
-        $this->manager->configure($config);
-
-        $target = Utils::formatContainer($container);
-
-        $registry = $this->manager->registry;
-        $this->assertArrayHasKey($proxy, $registry);
-        $values = $registry[$proxy];
-
-        $this->assertSame('foo', $values['id']);
-        $this->assertSame($target, $values['target']);
-    }
-
-    /**
     * Test that proxy instance is registered correctly in the registry array.
     *
     */

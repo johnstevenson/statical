@@ -1,7 +1,7 @@
 <?php
 namespace Statical\Tests\Fixtures;
 
-class ConfigHandler extends \Statical\ConfigHandler
+class Config extends \Statical\Config
 {
     public function __call($method, $arguments)
     {

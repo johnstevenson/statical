@@ -132,12 +132,11 @@
     * Applies a set of proxy settings
     *
     * @param array $config
-    * @param mixed $container
     * @return void
     */
     public function configure(array $config)
     {
-        $handler = new ConfigHandler($this);
+        $handler = new Config($this);
         $handler->apply($config);
     }
 

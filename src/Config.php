@@ -13,7 +13,7 @@
 
  use Statical\Input;
 
- class ConfigHandler
+ class Config
  {
     /**
     * The statical Manager
@@ -34,7 +34,6 @@
     * Applies a set of proxy settings and actions
     *
     * @param array $config
-    * @param callable $container
     * @return void
     */
     public function apply(array $config)
@@ -49,36 +48,36 @@
     }
 
     /**
+    * Returns an array of available empty configuration settings
+    *
+    * @return array
+    */
+    public static function getEmpty()
+    {
+        return array(
+            'instances' => array(),
+            'services' => array(),
+            'namespaces' => array(),
+            'boot' => ''
+        );
+    }
+
+    /**
     * Merges config values with the default set.
     *
-    * @param array $config
+    * @param array $input
     * @throws InvalidArgumentException
     * @return array
     */
     protected function formatInput(array $input)
     {
-        $config = $this->getDefault();
+        $config = static::getEmpty();
 
         foreach ($config as $key => $default) {
             $config[$key] = Input::checkConfig($input, $key, $default);
         }
 
-        if (!is_null($config['container'])) {
-            $this->checkContainer($config);
-        }
-
         return $config;
-    }
-
-    protected function checkContainer(&$config)
-    {
-        $container = Input::checkContainer($config['container']);
-
-        foreach($config['services'] as &$service) {
-            if (!Input::get($service, 2, null)) {
-                $service[2] = $container;
-            }
-        }
     }
 
     /**
@@ -107,21 +106,5 @@
         } elseif ('enable' === $boot) {
             $this->manager->enable();
         }
-    }
-
-    /**
-    * Returns an array of available configuration settings
-    *
-    * @return array
-    */
-    protected function getDefault()
-    {
-        return array(
-            'instances' => array(),
-            'services' => array(),
-            'container' => null,
-            'namespaces' => array(),
-            'boot' => ''
-        );
     }
  }
