@@ -43,7 +43,7 @@
     */
     public static $singleton = false;
 
-    const STATICAL_PROXY = 'Statical\StaticalProxy';
+    const STATICAL_PROXY = 'Statical\\StaticalProxy';
 
     /**
     * Constructor - will throw an exception if we have been set as a singleton.
