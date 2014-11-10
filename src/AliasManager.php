@@ -20,7 +20,7 @@
     *
     * @var array
     */
-    protected $aliases = array();
+    protected $aliases;
 
     /**
     * The namespace manager
@@ -34,7 +34,7 @@
     *
     * @var bool
     */
-    protected $useNamespacing = false;
+    protected $useNamespacing;
 
     /**
     * The autoloader callable
@@ -45,9 +45,12 @@
 
     public function __construct()
     {
+        $this->aliases = array();
         $this->namespacer = new NamespaceManager();
         $this->aliasLoader = array($this, 'loader');
         $this->disable();
+
+        // namespacing is enabled, but can be disabled in a call to disable()
         $this->useNamespacing = true;
     }
 

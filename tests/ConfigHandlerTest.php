@@ -17,51 +17,20 @@ class ConfigHandlerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-    * Test that checkInput throws an exception if container is null.
-    *
-    * @expectedException InvalidArgumentException
-    * @expectedExceptionMessage Container must be a callable
-    */
-    public function testCheckInputFailsWithNullContainer()
-    {
-        $config = array(
-            'instances' => array(
-                'Foo' => 'Proxies\Foo'
-            )
-        );
-
-        $this->config->apply($config, null);
-    }
-
-    /**
-    * Test that checkInput does not throw an execption with a null container if
-    * it is not required.
+    * Test that formatInput throws an exception for invalid values.
     *
     */
-    public function testCheckInputAllowsNullContainerWhenNotRequired()
-    {
-        $config = array(
-            'boot' => 'self'
-        );
-
-        $this->config->apply($config, null);
-    }
-
-    /**
-    * Test that getItem throws an exception for invalid values.
-    *
-    */
-    public function testGetItemFailsWhenInvalid()
+    public function testFormatInputFailsWhenInvalid()
     {
         $defaults = $this->config->getDefault();
 
         foreach ($defaults as $key => $default) {
-            // Copy $default to $config then make the test value null
+            // Copy $default to $config then make the test value invalid
             $config = $defaults;
             $config[$key] = new \stdClass();
 
             try {
-                $this->config->getItem($config, $key, $default);
+                $this->config->formatInput($config);
             } catch (\InvalidArgumentException $e) {
                 continue;
             }
@@ -71,42 +40,32 @@ class ConfigHandlerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-    * Test that checkInput formats array values to an array
+    * Test that formatInput throws an exception if container is invalid.
+    *
+    * @expectedException InvalidArgumentException
+    * @expectedExceptionMessage Container must be a callable
+    */
+    public function testFormatInputFailsWithInvalidContainer()
+    {
+        $config['container'] = '';
+
+        $this->config->formatInput($config);
+    }
+
+    /**
+    * Test that formatInput adds container to service values
     *
     */
-    public function testCheckInputFormatsArrayValues()
+    public function testFormatInputAddsContainer()
     {
-        $config = array(
-            'instances' => array(
-                'Foo' => 'Proxies\Foo'
-            ),
-            'services' => array(
-                'Bar' => array('Proxies\Bar', 'baz')
-            ),
-            'namespaces' => array(
-                'Foo' => '*'
-            ),
-            'boot' => 'enable'
-        );
-
-        $expected = array(
-            'instances' => array(
-                'Foo' => array('Proxies\Foo', '')
-            ),
-            'services' => array(
-                'Bar' => array('Proxies\Bar', 'baz')
-            ),
-            'namespaces' => array(
-                'Foo' => array('*', '')
-            ),
-            'boot' => 'enable'
-        );
-
-
         $container = Utils::container();
-        $this->manager->setContainer($container);
-        $this->config->apply($config, $container);
+        $config['services'] = array();
+        $config['services'][] = array('Foo', 'Name\\Space\\Proxy');
+        $config['container'] = $container;
 
-        $this->assertSame($expected, $this->config->config);
+        $result = $this->config->formatInput($config);
+        $expected = Utils::formatContainer($container);
+
+        $this->assertSame($expected, $result['services'][0][2]);
     }
 }

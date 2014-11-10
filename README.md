@@ -125,7 +125,7 @@ $container->set($id, function ($c) {
 $manager new Statical\Manager();
 
 # Add proxy service
-$manager->addProxyService($alias, $proxy, $id, $container);
+$manager->addProxyService($alias, $proxy, $container, $id);
 $manager->enable();
 
 # MyClass is resolved from the container each time Foo is called

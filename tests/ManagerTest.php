@@ -12,16 +12,14 @@ class ManagerTest extends TestBase
     */
     public function testConfigFromConstructor()
     {
+        $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
         $container = Utils::container();
-        $config = array(
-            'services' => array(
-                'Foo' => 'Statical\\Tests\\Fixtures\\FooProxy'
-            )
-        );
+
+        $config['services'] = array();
+        $config['services'][] = array('Foo', $proxy, $container);
 
         $this->replaceManager($config);
 
-        $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
         $target = Utils::formatContainer($container);
 
         $registry = $this->manager->registry;
@@ -38,16 +36,15 @@ class ManagerTest extends TestBase
     */
     public function testConfigureWithContainer()
     {
+        $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
         $container = Utils::container();
-        $config = array(
-            'services' => array(
-                'Foo' => 'Statical\\Tests\\Fixtures\\FooProxy'
-            )
-        );
+
+        $config['services'] = array();
+        $config['services'][] = array('Foo', $proxy);
+        $config['container'] = $container;
 
         $this->manager->configure($config);
 
-        $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
         $target = Utils::formatContainer($container);
 
         $registry = $this->manager->registry;

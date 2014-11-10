@@ -143,7 +143,7 @@ class ProxyTest extends TestBase
 
         // Set the instance in the container and register it
         $container->set($id, $this->fooInstance);
-        $this->manager->addProxyService($alias, $proxy, $id, $container);
+        $this->manager->addProxyService($alias, $proxy, $container, $id);
 
         $expected = get_class($this->fooInstance);
         $this->assertEquals($expected, \Foo::getClass());
@@ -151,7 +151,7 @@ class ProxyTest extends TestBase
         // Set the closure in the container and register it
         $id = 'foo2';
         $container->set($id, Utils::fooClosure());
-        $this->manager->addProxyService($alias, $proxy, $id, $container);
+        $this->manager->addProxyService($alias, $proxy, $container, $id);
 
         $this->assertEquals($expected, \Foo::getClass());
     }
@@ -171,7 +171,7 @@ class ProxyTest extends TestBase
 
         // Set the instance in the container and register it
         $container->set($id, $this->fooInstance);
-        $this->manager->addProxyService($alias, $proxy, $id, $container);
+        $this->manager->addProxyService($alias, $proxy, $container, $id);
 
         $expected = get_class($this->fooInstance);
         $this->assertEquals($expected, \Foo::getClass());
@@ -179,7 +179,7 @@ class ProxyTest extends TestBase
         // Set the closure in the container and register it
         $id = 'foo2';
         $container->set($id, Utils::fooClosure());
-        $this->manager->addProxyService($alias, $proxy, $id, $container);
+        $this->manager->addProxyService($alias, $proxy, $container, $id);
 
         $this->assertEquals($expected, \Foo::getClass());
     }
@@ -201,7 +201,7 @@ class ProxyTest extends TestBase
 
         // Set the instance in the container and register it
         $container->set($id, $this->fooInstance);
-        $this->manager->addProxyService($alias, $proxy, $id, Utils::formatContainer($container));
+        $this->manager->addProxyService($alias, $proxy, Utils::formatContainer($container), $id);
 
         $expected = get_class($this->fooInstance);
         $this->assertEquals($expected, \Foo::getClass());
@@ -209,7 +209,7 @@ class ProxyTest extends TestBase
         // Set the closure in the container and register it
         $id = 'foo2';
         $container->set($id, Utils::fooClosure());
-        $this->manager->addProxyService($alias, $proxy, $id, Utils::formatContainer($container));
+        $this->manager->addProxyService($alias, $proxy, Utils::formatContainer($container), $id);
 
         $this->assertEquals($expected, \Foo::getClass());
     }
@@ -231,7 +231,7 @@ class ProxyTest extends TestBase
         // Set the instance in the container and register the id
         $alias = 'Foo1';
         $container->set($id, $this->fooInstance);
-        $this->manager->addProxyService($alias, $proxy, $id, $container);
+        $this->manager->addProxyService($alias, $proxy, $container, $id);
 
         // Use an array container
         $container = Utils::arrayContainer();
@@ -239,7 +239,7 @@ class ProxyTest extends TestBase
         // Set the closure in the container and register it
         $alias = 'Foo2';
         $container->set($id, Utils::fooClosure());
-        $this->manager->addProxyService($alias, $proxy, $id, $container);
+        $this->manager->addProxyService($alias, $proxy, $container, $id);
 
         // Use a custom container
         $container = Utils::customContainer();
@@ -247,7 +247,7 @@ class ProxyTest extends TestBase
         // Set the instance in the container and register it
         $alias = 'Foo3';
         $container->set($id, $this->fooInstance);
-        $this->manager->addProxyService($alias, $proxy, $id, Utils::formatContainer($container));
+        $this->manager->addProxyService($alias, $proxy, Utils::formatContainer($container), $id);
 
         $expected = get_class($this->fooInstance);
 
@@ -272,7 +272,7 @@ class ProxyTest extends TestBase
 
         // Set the instance in the container and register it with the namespace
         $container->set($id, $this->fooInstance);
-        $this->manager->addProxyService($alias, $proxy, $id, $container, $namespace);
+        $this->manager->addProxyService($alias, $proxy, $container, $id, $namespace);
 
         $expected = get_class($this->fooInstance);
         $this->assertEquals($expected, Foo::getClass());
@@ -293,7 +293,7 @@ class ProxyTest extends TestBase
 
         // Set foo instance in the container and register it
         $container->set($id, $this->fooInstance);
-        $this->manager->addProxyService($alias, $proxy, $id, $container);
+        $this->manager->addProxyService($alias, $proxy, $container, $id);
 
         $expected = get_class($this->fooInstance);
         $this->assertEquals($expected, \Foo::getClass());
@@ -301,7 +301,7 @@ class ProxyTest extends TestBase
         $id = 'bar';
         // Set bar closure in the container and register it
         $container->set($id, Utils::barClosure());
-        $this->manager->addProxyService($alias, $proxy, $id, $container);
+        $this->manager->addProxyService($alias, $proxy, $container, $id);
 
         $expected = get_class($this->barInstance);
         $this->assertEquals($expected, \Foo::getClass());
@@ -322,7 +322,7 @@ class ProxyTest extends TestBase
 
         // Set foo instance in the container and register it
         $container->set($id, $this->fooInstance);
-        $this->manager->addProxyService($alias, $proxy, $id, $container);
+        $this->manager->addProxyService($alias, $proxy, $container, $id);
 
         $expected = get_class($this->fooInstance);
         $this->assertEquals($expected, \Foo::getClass());

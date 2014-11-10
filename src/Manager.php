@@ -36,8 +36,6 @@
     */
     public static $singleton = false;
 
-    const STATICAL_PROXY = 'Statical\\StaticalProxy';
-
     /**
     * Constructor - will throw an exception if we have been set as a singleton.
     *
@@ -65,8 +63,7 @@
     */
     public function addProxySelf()
     {
-        $this->addProxyInstance('Statical', static::STATICAL_PROXY, $this);
-        $this->addNamespace('Statical', '*');
+        $this->addProxyInstance('Statical', 'Statical\\StaticalProxy', $this, '*');
         $this->enable();
     }
 
@@ -75,15 +72,15 @@
     *
     * @param string $alias
     * @param string $proxy
-    * @param string $id
     * @param callable $container
+    * @param string|null $id
     * @param array $namespace
     */
-    public function addProxyService($alias, $proxy, $id, $container, $namespace = array())
+    public function addProxyService($alias, $proxy, $container, $id = null, $namespace = array())
     {
         $proxy = Input::checkNamespace($proxy);
-        $id = Input::check($id);
         $container = Input::checkContainer($container);
+        $id = $id ?: strtolower($alias);
 
         $this->addProxy($proxy, $id, $container);
         $this->aliasManager->add($proxy, $alias);

@@ -23,25 +23,6 @@
     protected $manager;
 
     /**
-    * The formatted config
-    *
-    * @var array
-    */
-    protected $config = array();
-
-    /**
-    * The container instance
-    *
-    * @var object
-    */
-    protected $instance;
-
-    const INSTANCES = 'instances';
-    const SERVICES = 'services';
-    const NAMESPACES = 'namespaces';
-    const BOOT = 'boot';
-
-    /**
     * @param Manager $manager
     */
     public function __construct(Manager $manager)
@@ -56,93 +37,51 @@
     * @param callable $container
     * @return void
     */
-    public function apply(array $config, $container)
+    public function apply(array $config)
     {
-        $this->checkInput($config, $container);
+        $config = $this->formatInput($config);
 
-        $proxies = array(self::INSTANCES, self::SERVICES);
-        foreach ($proxies as $key) {
-            $this->addProxies($key);
-        }
+        $this->addSettings($config['instances'], 'addProxyInstance');
+        $this->addSettings($config['services'], 'addProxyService');
+        $this->addSettings($config['namespaces'], 'addNamespace');
 
-        $this->addNamespaces();
-        $this->bootManager();
+        $this->bootManager($config['boot']);
     }
 
     /**
-    * Checks config values and the container if required.
-    *
-    * Sets $this->config with a set of all config values and $this->instance
-    * if it is required.
+    * Merges config values with the default set.
     *
     * @param array $config
-    * @param callable $container
     * @throws InvalidArgumentException
-    * @return void
+    * @return array
     */
-    protected function checkInput(array $config, $container)
+    protected function formatInput(array $config)
     {
-        $this->config = $this->getDefault();
+        $result = $this->getDefault();
 
-        foreach($this->config as $key => $default) {
-            $this->config[$key] = $this->getItem($config, $key, $default);
+        foreach ($result as $key => $default) {
+            $result[$key] = Input::checkConfig($config, $key, $default);
         }
 
-        if ($this->requiresContainer()) {
-            $container = Input::checkContainer($container);
-            $this->instance = $container[0];
-        }
-    }
+        if (!is_null($result['container'])) {
+            $container = Input::checkContainer($result['container']);
 
-    /**
-    * Extracts a config value, checks its type and formats it.
-    *
-    * @param array $config
-    * @param string $key
-    * @param mixed $default
-    * @return mixed
-    */
-    protected function getItem($config, $key, $default)
-    {
-        $result = Input::checkConfig($config, $key, $default);
-
-        if (is_array($result)) {
-            array_walk($result, function (&$value) {
-                $value = array_map('trim', array_pad((array) $value, 2, ''));
-            });
+            foreach($result['services'] as &$service) {
+                if (!Input::get($service, 2, null)) {
+                    $service[2] = $container;
+                }
+            }
         }
 
         return $result;
     }
 
-    /**
-    * Adds instances or services from the config array.
-    *
-    * @param string $key
-    * @return void
-    */
-    protected function addProxies($key)
+    protected function addSettings($items, $method)
     {
-        foreach ($this->config[$key] as $alias => $array) {
+        $func = array($this->manager, $method);
 
-            if (self::INSTANCES === $key) {
-                $this->manager->addProxyInstance($alias, $array[0], $this->instance);
-            } else {
-                $id = $array[1] ?: strtolower($alias);
-                $this->manager->addProxyService($alias, $array[0], $id);
-            }
-        }
-    }
-
-    /**
-    * Adds namespaces from the config array.
-    *
-    * @return void
-    */
-    protected function addNamespaces()
-    {
-        foreach ($this->config[self::NAMESPACES] as $alias => $array) {
-            $this->manager->addNamespace($alias, $array[0]);
+        foreach ($items as $params) {
+            call_user_func_array($func, $params);
         }
     }
 
@@ -151,25 +90,13 @@
     *
     * @return void
     */
-    protected function bootManager()
+    protected function bootManager($boot)
     {
-        $value = $this->config[self::BOOT];
-
-        if ('self' === $value) {
+        if ('self' === $boot) {
             $this->manager->addProxySelf();
-        } elseif ('enable' === $value) {
+        } elseif ('enable' === $boot) {
             $this->manager->enable();
         }
-    }
-
-    /**
-    * Returns true if the config requires a container
-    *
-    * @return bool
-    */
-    protected function requiresContainer()
-    {
-        return $this->config[self::INSTANCES] || $this->config[self::SERVICES];
     }
 
     /**
@@ -180,10 +107,11 @@
     protected function getDefault()
     {
         return array(
-            self::INSTANCES => array(),
-            self::SERVICES => array(),
-            self::NAMESPACES => array(),
-            self::BOOT => ''
+            'instances' => array(),
+            'services' => array(),
+            'container' => null,
+            'namespaces' => array(),
+            'boot' => ''
         );
     }
  }

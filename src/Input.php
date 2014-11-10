@@ -20,22 +20,6 @@
  class Input
  {
     /**
-    * Checks that a value is a string and not empty
-    *
-    * @param string $value
-    * @throws InvalidArgumentException
-    * @return string
-    */
-    public static function check($value)
-    {
-        if (!is_string($value) || !$value) {
-            throw new \InvalidArgumentException('Empty or invalid value.');
-        }
-
-        return $value;
-    }
-
-    /**
     * Checks that an alias has no backslash characters
     *
     * @param string $value
@@ -100,10 +84,39 @@
     */
     public static function checkConfig($config, $key, $default)
     {
-        $value = isset($config[$key]) ? $config[$key] : $default;
+        $value = static::get($config, $key, $default);
 
-        if (gettype($default) !== gettype($value)) {
+        if (!is_null($default) && gettype($default) !== gettype($value)) {
             throw new \InvalidArgumentException('Invalid value for config ' . $key);
+        }
+
+        return $value;
+    }
+
+    /**
+    * Returns a value from an array if the key exists, otherwise the default.
+    *
+    * @param array $array
+    * @param string|integer $key
+    * @param mixed $default
+    * @return mixed
+    */
+    public static function get($array, $key, $default)
+    {
+        return isset($array[$key]) ? $array[$key] : $default;
+    }
+
+    /**
+    * Checks that a value is a string and not empty
+    *
+    * @param string $value
+    * @throws InvalidArgumentException
+    * @return string
+    */
+    protected static function check($value)
+    {
+        if (!is_string($value) || !$value) {
+            throw new \InvalidArgumentException('Empty or invalid value.');
         }
 
         return $value;
@@ -133,6 +146,4 @@
 
         return array($instance, $method);
     }
-
-
  }
