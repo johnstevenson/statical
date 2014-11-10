@@ -11,10 +11,16 @@
 
  namespace Statical;
 
+ /**
+ * This class provides functions to check various input values and throw an
+ * InvalidArgumentException on failure.
+ *
+ * All functions are static, enabling their use from various component classes.
+ */
  class Input
  {
     /**
-    * Checks for string value with no leading backslash
+    * Checks that a value is a string and not empty
     *
     * @param string $value
     * @throws InvalidArgumentException
@@ -76,7 +82,7 @@
     {
         $result = static::formatContainer($container);
 
-         if (!is_callable($result)) {
+        if (!is_callable($result)) {
             throw new \InvalidArgumentException('Container must be a callable.');
         }
 
