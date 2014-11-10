@@ -49,28 +49,5 @@ class InputTest extends \PHPUnit_Framework_TestCase
         $container = new \stdClass();
         Input::checkContainer($container);
     }
-
-    /**
-    * Test checkContainerEx throws an exception when passed a null container
-    * and the default has not been set.
-    *
-    * @expectedException RuntimeException
-    */
-    public function testCheckContainerExFailsNoDefaultOnNull()
-    {
-        Input::checkContainerEx(null, null);
-    }
-
-    /**
-    * Test checkContainerEx returns the default container when null is passed in.
-    *
-    */
-    public function testCheckContainerExReturnsDefaultOnNull()
-    {
-        $container = Utils::container();
-        $default = Utils::formatContainer($container);
-
-        $this->AssertSame($default, Input::checkContainerEx(null, $default));
-    }
 }
 

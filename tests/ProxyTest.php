@@ -215,53 +215,6 @@ class ProxyTest extends TestBase
     }
 
     /**
-    * Test we can add a proxy service from default container
-    *
-    */
-    public function testAddProxyServiceInitialContainer()
-    {
-        // Make a new manager with an array container
-        $container = Utils::arrayContainer();
-        $this->replaceManager($container);
-        $this->manager->enable();
-
-        $alias = 'Foo';
-        $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
-        $id = 'foo';
-
-        // Set the closure in the container and register the id
-        $container->set($id, Utils::fooClosure());
-        $this->manager->addProxyService($alias, $proxy, $id);
-
-        $expected = get_class($this->fooInstance);
-        $this->assertEquals($expected, \Foo::getClass());
-    }
-
-    /**
-    * Test we can add a proxy service from setContainer
-    *
-    */
-    public function testAddProxyServiceSetContainer()
-    {
-        $this->manager->enable();
-
-        $alias = 'Foo';
-        $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
-        $id = 'foo';
-        $container = Utils::container();
-
-        // Set the default container
-        $this->manager->setContainer($container);
-
-        // Set the instance in the container and register the id
-        $container->set($id, $this->fooInstance);
-        $this->manager->addProxyService($alias, $proxy, $id);
-
-        $expected = get_class($this->fooInstance);
-        $this->assertEquals($expected, \Foo::getClass());
-    }
-
-    /**
     * Test we can add a proxy service using different containers
     *
     */
@@ -269,17 +222,16 @@ class ProxyTest extends TestBase
     {
         $this->manager->enable();
 
-        $alias = 'Foo1';
         $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
         $id = 'foo';
+
+        // Use a standard container
         $container = Utils::container();
 
-        // Set the default container
-        $this->manager->setContainer($container);
-
         // Set the instance in the container and register the id
+        $alias = 'Foo1';
         $container->set($id, $this->fooInstance);
-        $this->manager->addProxyService($alias, $proxy, $id);
+        $this->manager->addProxyService($alias, $proxy, $id, $container);
 
         // Use an array container
         $container = Utils::arrayContainer();

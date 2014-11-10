@@ -7,57 +7,6 @@ use Statical\Tests\Fixtures\Utils;
 class ManagerTest extends TestBase
 {
     /**
-    * Test we can set a container from the contructor
-    *
-    */
-    public function testSetContainerFromConstructor()
-    {
-        $container = Utils::container();
-        $this->replaceManager($container);
-
-        $expected = Utils::formatContainer($container);
-        $this->AssertSame($expected, $this->manager->container);
-    }
-
-    /**
-    * Test we can set a container from setContainer
-    *
-    */
-    public function testSetContainer()
-    {
-        $container = Utils::container();
-        $this->manager->setContainer($container);
-
-        $expected = Utils::formatContainer($container);
-        $this->AssertSame($expected, $this->manager->container);
-    }
-
-    /**
-    * Test that setContainer accepts a custom container in an array.    *
-    */
-    public function testSetContainerAcceptsCustom()
-    {
-        $container = Utils::formatContainer(Utils::customContainer());
-        $this->manager->setContainer($container);
-        $this->AssertSame($container, $this->manager->container);
-    }
-
-    /**
-    * Test that setContainer returns the original container
-    *
-    */
-    public function testSetContainerReturnOriginal()
-    {
-        $container = Utils::container();
-        $this->replaceManager($container);
-
-        $original = Utils::formatContainer($container);
-
-        $newContainer = Utils::arrayContainer();
-        $this->assertSame($original, $this->manager->setContainer($newContainer));
-    }
-
-    /**
     * Test that config item is registered from the constructor
     *
     */
@@ -70,35 +19,7 @@ class ManagerTest extends TestBase
             )
         );
 
-        $this->replaceManager($container, $config);
-
-        $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
-        $target = Utils::formatContainer($container);
-
-        $registry = $this->manager->registry;
-        $this->assertArrayHasKey($proxy, $registry);
-        $values = $registry[$proxy];
-
-        $this->assertSame('foo', $values['id']);
-        $this->assertSame($target, $values['target']);
-    }
-
-    /**
-    * Test that configure registers an item using the default container.
-    *
-    */
-    public function testConfigureDefaultContainer()
-    {
-        $container = Utils::container();
-        $this->manager->setContainer($container);
-
-        $config = array(
-            'services' => array(
-                'Foo' => 'Statical\\Tests\\Fixtures\\FooProxy'
-            )
-        );
-
-        $this->manager->configure($config);
+        $this->replaceManager($config);
 
         $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
         $target = Utils::formatContainer($container);
@@ -124,7 +45,7 @@ class ManagerTest extends TestBase
             )
         );
 
-        $this->manager->configure($config, $container);
+        $this->manager->configure($config);
 
         $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
         $target = Utils::formatContainer($container);

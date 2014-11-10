@@ -30,13 +30,6 @@
     protected $aliasManager;
 
     /**
-    * The container instance
-    *
-    * @var callable
-    */
-    protected $container = array();
-
-    /**
     * Whether the class is to be treated as a singleton.
     *
     * @var bool
@@ -48,11 +41,10 @@
     /**
     * Constructor - will throw an exception if we have been set as a singleton.
     *
-    * @param mixed $container
     * @param array $config
     * @throws RuntimeException
     */
-    public function __construct($container = null, array $config = array())
+    public function __construct(array $config = array())
     {
         if (static::$singleton) {
             throw new \RuntimeException(__CLASS__ . ' has been set as a singleton.');
@@ -62,9 +54,7 @@
         $this->aliasManager = new AliasManager();
 
         if ($config) {
-            $this->configure($config, $container);
-        } elseif ($container) {
-            $this->setContainer($container);
+            $this->configure($config);
         }
     }
 
@@ -86,14 +76,14 @@
     * @param string $alias
     * @param string $proxy
     * @param string $id
-    * @param callable|null $container
+    * @param callable $container
     * @param array $namespace
     */
-    public function addProxyService($alias, $proxy, $id, $container = null, $namespace = array())
+    public function addProxyService($alias, $proxy, $id, $container, $namespace = array())
     {
         $proxy = Input::checkNamespace($proxy);
         $id = Input::check($id);
-        $container = Input::checkContainerEx($container, $this->container);
+        $container = Input::checkContainer($container);
 
         $this->addProxy($proxy, $id, $container);
         $this->aliasManager->add($proxy, $alias);
@@ -145,32 +135,10 @@
     * @param mixed $container
     * @return void
     */
-    public function configure(array $config, $container = null)
+    public function configure(array $config)
     {
-        if ($container) {
-            $this->setContainer($container);
-        }
-
         $handler = new ConfigHandler($this);
-        $handler->apply($config, $this->container);
-    }
-
-    /**
-    * Sets the default container for proxy services and returns the old one.
-    *
-    * This container is used if calls to addProxyService do not pass in a
-    * container.
-    *
-    * @param mixed $container
-    * @throws RuntimeException
-    * @return callable|null
-    */
-    public function setContainer($container)
-    {
-        $result = $this->container;
-        $this->container = Input::checkContainer($container);
-
-        return $result;
+        $handler->apply($config);
     }
 
     /**

@@ -90,23 +90,6 @@
     }
 
     /**
-    * Returns either the checked passed in container, or the default.
-    *
-    * @param mixed $container
-    * @param callable $default
-    * @throws RuntimeException
-    * @return callable
-    */
-    public static function checkContainerEx($container, $default)
-    {
-        if (!$container && !$default) {
-            throw new \RuntimeException('Default container has not been set.');
-        }
-
-        return $container ? static::checkContainer($container) : $default;
-    }
-
-    /**
     * Extracts a config value and checks its type against the default.
     *
     * @param array $config
