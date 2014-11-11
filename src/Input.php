@@ -58,7 +58,7 @@
     /**
     * Checks that the container is valid
     *
-    * @param object|callable $container
+    * @param object|array $container
     * @throws InvalidArgumentException
     * @return callable
     */

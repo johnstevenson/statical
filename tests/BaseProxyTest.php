@@ -16,7 +16,6 @@ class BaseProxyTest extends \PHPUnit_Framework_TestCase
     public function testGetInstance()
     {
         $manager = new Manager();
-        $manager->enable();
 
         $alias = 'Foo';
         $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';

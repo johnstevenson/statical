@@ -34,7 +34,7 @@
     *
     * @var bool
     */
-    protected $useNamespacing;
+    protected $namespacing;
 
     /**
     * The autoloader callable
@@ -43,15 +43,18 @@
     */
     protected $aliasLoader;
 
-    public function __construct()
+    /**
+    * Constructor.
+    *
+    * @param boolean $namespacing
+    */
+    public function __construct($namespacing)
     {
         $this->aliases = array();
         $this->namespacer = new NamespaceManager();
         $this->aliasLoader = array($this, 'loader');
         $this->disable();
-
-        // namespacing is enabled, but can be disabled in a call to disable()
-        $this->useNamespacing = true;
+        $this->namespacing = $namespacing;
     }
 
     /**
@@ -94,28 +97,21 @@
                 return;
             }
 
-            $this->disable(false);
+            $this->disable();
         }
 
         spl_autoload_register($this->aliasLoader);
     }
 
     /**
-    * Disables static proxying or the namespacing feature.
+    * Disables static proxying.
     *
-    * If $onlyNamespacing is true, the autoloader is not unregistered.
-    *
-    * @param bool $onlyNamespacing
     * @return void
     */
-    public function disable($onlyNamespacing = false)
+    public function disable()
     {
-        if ($onlyNamespacing) {
-            $this->useNamespacing = false;
-        } else {
-            spl_autoload_unregister($this->aliasLoader);
-            $this->checkAutoloadStack();
-        }
+        spl_autoload_unregister($this->aliasLoader);
+        $this->checkAutoloadStack();
     }
 
     /**
@@ -130,7 +126,7 @@
             return;
         }
 
-        if ($this->useNamespacing) {
+        if ($this->namespacing) {
             if ($alias = $this->getNamespaceAlias($class)) {
                 class_alias($this->aliases[$alias], $class);
             }

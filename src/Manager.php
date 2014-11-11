@@ -39,16 +39,19 @@
     /**
     * Constructor - will throw an exception if we have been set as a singleton.
     *
+    * @param string $boot
+    * @param boolean $namespacing
     * @throws RuntimeException
     */
-    public function __construct()
+    public function __construct($boot = 'self', $namespacing = true)
     {
         if (static::$singleton) {
             throw new \RuntimeException(__CLASS__ . ' has been set as a singleton.');
         }
 
         BaseProxy::setResolver($this);
-        $this->aliasManager = new AliasManager();
+        $this->aliasManager = new AliasManager($namespacing);
+        $this->boot($boot);
     }
 
     /**
@@ -136,16 +139,13 @@
     }
 
     /**
-    * Disables static proxying or the namespacing feature.
+    * Disables static proxying.
     *
-    * If $onlyNamespacing is true, the autoloader is not unregistered.
-    *
-    * @param bool $onlyNamespacing
     * @return void
     */
-    public function disable($onlyNamespacing = false)
+    public function disable()
     {
-        $this->aliasManager->disable($onlyNamespacing);
+        $this->aliasManager->disable();
     }
 
     /**
@@ -189,7 +189,7 @@
     /**
     * Adds a proxy to the registry array
     *
-    * Assumes that the inputs are correct.
+    * Since this is caled internally it assumes that the inputs are correct.
     *
     * @param string $proxy
     * @param string $id
@@ -206,5 +206,28 @@
             'target' => $callee,
             'closure' => $closure
         );
+    }
+
+    /**
+    * Enables static proxying when we create the manager.
+    *
+    * @param string $value
+    * @throws InvalidArgumentException
+    * $return void
+    */
+    protected function boot($value)
+    {
+        switch ($value) {
+            case 'enable':
+                $this->enable();
+                break;
+            case 'none':
+                break;
+            case 'self':
+                $this->addProxySelf();
+                break;
+            default:
+                throw new \InvalidArgumentException('Unknown boot value: '.$value);
+        }
     }
  }

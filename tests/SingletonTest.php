@@ -2,6 +2,7 @@
 namespace Statical\Tests;
 
 use Statical\Tests\Fixtures\TestBase;
+use Statical\Tests\Fixtures\Manager;
 
 require 'bootstrap.php';
 
@@ -18,9 +19,8 @@ class SingletonTest extends TestBase
     */
     public function testCreateNewNoSingleton()
     {
-        $previous = $this->manager;
-        $this->replaceManager();
-        $this->assertNotSame($previous, $this->manager);
+        $newManager = new Manager();
+        $this->assertNotSame($this->manager, $newManager);
     }
 
     /**
@@ -31,6 +31,6 @@ class SingletonTest extends TestBase
     public function testCreateNewFailsWhenSingleton()
     {
         $this->manager->makeSingleton();
-        $this->replaceManager();
+        $newManager = new Manager();
     }
 }

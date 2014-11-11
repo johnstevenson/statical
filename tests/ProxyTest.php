@@ -25,8 +25,6 @@ class ProxyTest extends TestBase
     */
     public function testAddProxyInstance()
     {
-        $this->manager->enable();
-
         $alias = 'Foo';
         $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
 
@@ -42,8 +40,6 @@ class ProxyTest extends TestBase
     */
     public function testAddProxyInstanceWithNamespace()
     {
-        $this->manager->enable();
-
         $alias = 'Foo';
         $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
 
@@ -60,8 +56,6 @@ class ProxyTest extends TestBase
     */
     public function testAddProxyInstanceClosure()
     {
-        $this->manager->enable();
-
         $alias = 'Foo';
         $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
         $closure = Utils::fooClosure();
@@ -78,8 +72,6 @@ class ProxyTest extends TestBase
     */
     public function testAddProxyInstanceClosureResolvesOnce()
     {
-        $this->manager->enable();
-
         $alias = 'Foo';
         $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
         $closure = Utils::fooClosure();
@@ -95,8 +87,6 @@ class ProxyTest extends TestBase
     */
     public function testReplaceProxyInstance()
     {
-        $this->manager->enable();
-
         $alias = 'Foo';
         $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
 
@@ -120,8 +110,6 @@ class ProxyTest extends TestBase
     */
     public function testAddProxyWithNullInstanceFails()
     {
-        $this->manager->enable();
-
         $alias = 'Foo';
         $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
 
@@ -134,8 +122,6 @@ class ProxyTest extends TestBase
     */
     public function testAddProxyServiceFromArrayContainer()
     {
-        $this->manager->enable();
-
         $alias = 'Foo';
         $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
         $id = 'foo';
@@ -162,8 +148,6 @@ class ProxyTest extends TestBase
     */
     public function testAddProxyServiceFromStandardContainer()
     {
-        $this->manager->enable();
-
         $alias = 'Foo';
         $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
         $id = 'foo';
@@ -190,8 +174,6 @@ class ProxyTest extends TestBase
     */
     public function testAddProxyServiceFromCustomContainer()
     {
-        $this->manager->enable();
-
         $alias = 'Foo';
         $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
         $id = 'foo';
@@ -220,8 +202,6 @@ class ProxyTest extends TestBase
     */
     public function testAddProxyServiceMultipleContainer()
     {
-        $this->manager->enable();
-
         $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
         $id = 'foo';
 
@@ -262,8 +242,6 @@ class ProxyTest extends TestBase
     */
     public function testAddProxyServiceWithNamespace()
     {
-        $this->manager->enable();
-
         $alias = 'Foo';
         $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
         $id = 'foo';
@@ -284,8 +262,6 @@ class ProxyTest extends TestBase
     */
     public function testReplaceProxyService()
     {
-        $this->manager->enable();
-
         $alias = 'Foo';
         $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
         $id = 'foo';
@@ -313,8 +289,6 @@ class ProxyTest extends TestBase
     */
     public function testSwapProxyService()
     {
-        $this->manager->enable();
-
         $alias = 'Foo';
         $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
         $id = 'foo';
@@ -340,7 +314,8 @@ class ProxyTest extends TestBase
     */
     public function testAddProxySelf()
     {
-        $this->manager->addProxySelf();
-        $this->assertSame($this->manager, Statical::getInstance());
+        $manager = new \Statical\Manager('none');
+        $manager->addProxySelf();
+        $this->assertSame($manager, Statical::getInstance());
     }
 }

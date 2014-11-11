@@ -10,7 +10,7 @@ class AliasManagerTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->manager = new AliasManager();
+        $this->aliasManager = new AliasManager(true);
         Utils::unregisterAppLoader();
     }
 
@@ -26,10 +26,10 @@ class AliasManagerTest extends \PHPUnit_Framework_TestCase
         $original = 'Statical\\Tests\\Fixtures\\Foo';
         $alias = 'Foo';
 
-        $this->manager->add($original, $alias);
+        $this->aliasManager->add($original, $alias);
 
         // key => $alias, value = $original
-        $this->assertEquals($this->manager->aliases[$alias], $original);
+        $this->assertEquals($this->aliasManager->aliases[$alias], $original);
     }
 
     /**
@@ -40,11 +40,11 @@ class AliasManagerTest extends \PHPUnit_Framework_TestCase
     {
         $original = 'Statical\\Tests\\Fixtures\\Foo';
         $alias = 'Foo';
-        $this->manager->add($original, $alias);
-        $this->manager->addNamespace($alias, 'Bar\\Baz');
+        $this->aliasManager->add($original, $alias);
+        $this->aliasManager->addNamespace($alias, 'Bar\\Baz');
 
         $this->assertEquals($alias,
-            $this->manager->getNamespaceAlias('Bar\\Baz\\Foo'));
+            $this->aliasManager->getNamespaceAlias('Bar\\Baz\\Foo'));
     }
 
     /**
@@ -55,11 +55,11 @@ class AliasManagerTest extends \PHPUnit_Framework_TestCase
     {
         $original = 'Statical\\Tests\\Fixtures\\Foo';
         $alias = 'Foo';
-        $this->manager->add($original, $alias);
-        $this->manager->addNamespace($alias, 'Bar\\Baz');
+        $this->aliasManager->add($original, $alias);
+        $this->aliasManager->addNamespace($alias, 'Bar\\Baz');
 
         $this->assertEquals(null,
-            $this->manager->getNamespaceAlias('Bar\\Foo'));
+            $this->aliasManager->getNamespaceAlias('Bar\\Foo'));
     }
 
     /**
@@ -68,11 +68,10 @@ class AliasManagerTest extends \PHPUnit_Framework_TestCase
     */
     public function testEnable()
     {
-        $this->manager->enable();
+        $this->aliasManager->enable();
 
         $this->assertTrue($this->loaderRegistered());
         $this->assertTrue($this->loaderLast());
-        $this->assertTrue($this->usingNamespacing());
     }
 
     /**
@@ -83,11 +82,10 @@ class AliasManagerTest extends \PHPUnit_Framework_TestCase
     */
     public function testEnableUpdate()
     {
-        $this->manager->enable();
+        $this->aliasManager->enable();
 
         $this->assertTrue($this->loaderRegistered());
         $this->assertTrue($this->loaderLast());
-        $this->assertTrue($this->usingNamespacing());
 
         Utils::registerAppLoader();
 
@@ -95,18 +93,11 @@ class AliasManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->loaderRegistered());
         $this->assertFalse($this->loaderLast());
 
-        $this->manager->enable();
-        $this->assertTrue($this->loaderRegistered());
+        $this->aliasManager->enable();
 
         // test that the loader has been re-registered on the end
-        $this->assertTrue($this->loaderLast());
-        $this->assertTrue($this->usingNamespacing());
-
-        // test that everything is correct after enabling
-        $this->manager->enable();
         $this->assertTrue($this->loaderRegistered());
         $this->assertTrue($this->loaderLast());
-        $this->assertTrue($this->usingNamespacing());
     }
 
     /**
@@ -115,33 +106,13 @@ class AliasManagerTest extends \PHPUnit_Framework_TestCase
     */
     public function testDisable()
     {
-        $this->manager->enable();
+        $this->aliasManager->enable();
 
         $this->assertTrue($this->loaderRegistered());
         $this->assertTrue($this->loaderLast());
-        $this->assertTrue($this->usingNamespacing());
 
-        $this->manager->disable();
+        $this->aliasManager->disable();
         $this->assertFalse($this->loaderRegistered());
-        $this->assertTrue($this->usingNamespacing());
-    }
-
-    /**
-    * Test we can disable namespacing only.
-    *
-    */
-    public function testDisableNamespacing()
-    {
-        $this->manager->enable();
-
-        $this->assertTrue($this->loaderRegistered());
-        $this->assertTrue($this->loaderLast());
-        $this->assertTrue($this->usingNamespacing());
-
-        $this->manager->disable(true);
-        $this->assertTrue($this->loaderRegistered());
-        $this->assertTrue($this->loaderLast());
-        $this->assertFalse($this->usingNamespacing());
     }
 
     /**
@@ -158,10 +129,10 @@ class AliasManagerTest extends \PHPUnit_Framework_TestCase
             spl_autoload_unregister($loader);
         }
 
-        $this->manager->enable();
+        $this->aliasManager->enable();
         $beforeCount = count(spl_autoload_functions());
 
-        $this->manager->disable();
+        $this->aliasManager->disable();
         $new = spl_autoload_functions();
         $newCount = count($new);
 
@@ -173,11 +144,6 @@ class AliasManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, $beforeCount);
         $this->assertEquals(1, $newCount);
         $this->assertEquals($new[0], '__autoload');
-    }
-
-    protected function usingNamespacing()
-    {
-        return $this->manager->useNamespacing;
     }
 
     protected function loaderRegistered()
@@ -194,7 +160,7 @@ class AliasManagerTest extends \PHPUnit_Framework_TestCase
 
     protected function getAutoloadState(&$index, &$last)
     {
-        $loader = array($this->manager, 'loader');
+        $loader = array($this->aliasManager, 'loader');
         $index = false;
         $last = 0;
 

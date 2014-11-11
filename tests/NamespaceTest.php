@@ -15,8 +15,6 @@ class NamespaceTest extends TestBase
     */
     public function testNamespaceRoot()
     {
-        $this->manager->enable();
-
         $alias = 'Foo';
         $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
         $instance = new \Statical\Tests\Fixtures\Foo();
@@ -34,8 +32,6 @@ class NamespaceTest extends TestBase
     */
     public function testNamespaceBase()
     {
-        $this->manager->enable();
-
         $alias = 'Foo';
         $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
         $instance = new \Statical\Tests\Fixtures\Foo();
@@ -53,8 +49,6 @@ class NamespaceTest extends TestBase
     */
     public function testNamespaceAny()
     {
-        $this->manager->enable();
-
         $alias = 'Foo';
         $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
         $instance = new \Statical\Tests\Fixtures\Foo();
@@ -72,8 +66,6 @@ class NamespaceTest extends TestBase
     */
     public function testNamespaceGlobal()
     {
-        $this->manager->enable();
-
         $alias = 'Foo';
         $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
         $instance = new \Statical\Tests\Fixtures\Foo();
@@ -91,8 +83,6 @@ class NamespaceTest extends TestBase
     */
     public function testNamespaceMultiple()
     {
-        $this->manager->enable();
-
         $alias = 'Foo';
         $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
         $instance = new \Statical\Tests\Fixtures\Foo();
@@ -129,8 +119,6 @@ class NamespaceTest extends TestBase
     */
     public function testNamespacePitfallFail()
     {
-        $this->manager->enable();
-
         // register new autoloader after alias autoloader
         Utils::registerAppLoader();
 
@@ -160,8 +148,6 @@ class NamespaceTest extends TestBase
     */
     public function testNamespacePitfallPass()
     {
-        $this->manager->enable();
-
         // register new autoloader after alias autoloader
         Utils::registerAppLoader();
 
