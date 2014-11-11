@@ -7,30 +7,6 @@ use Statical\Tests\Fixtures\Utils;
 class ManagerTest extends TestBase
 {
     /**
-    * Test that config item is registered from the constructor
-    *
-    */
-    public function testConfigFromConstructor()
-    {
-        $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
-        $container = Utils::container();
-
-        $config['services'] = array();
-        $config['services'][] = array('Foo', $proxy, $container);
-
-        $this->replaceManager($config);
-
-        $target = Utils::formatContainer($container);
-
-        $registry = $this->manager->registry;
-        $this->assertArrayHasKey($proxy, $registry);
-        $values = $registry[$proxy];
-
-        $this->assertSame('foo', $values['id']);
-        $this->assertSame($target, $values['target']);
-    }
-
-    /**
     * Test that proxy instance is registered correctly in the registry array.
     *
     */

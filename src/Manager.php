@@ -42,7 +42,7 @@
     * @param array $config
     * @throws RuntimeException
     */
-    public function __construct(array $config = array())
+    public function __construct()
     {
         if (static::$singleton) {
             throw new \RuntimeException(__CLASS__ . ' has been set as a singleton.');
@@ -50,10 +50,6 @@
 
         BaseProxy::setResolver($this);
         $this->aliasManager = new AliasManager();
-
-        if ($config) {
-            $this->configure($config);
-        }
     }
 
     /**
@@ -126,18 +122,6 @@
     public function addNamespace($alias, $namespace)
     {
         $this->aliasManager->addNamespace($alias, $namespace);
-    }
-
-    /**
-    * Applies a set of proxy settings
-    *
-    * @param array $config
-    * @return void
-    */
-    public function configure(array $config)
-    {
-        $handler = new Config($this);
-        $handler->apply($config);
     }
 
     /**
