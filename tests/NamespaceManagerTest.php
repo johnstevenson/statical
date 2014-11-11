@@ -5,7 +5,7 @@ use Statical\Tests\Fixtures\NamespaceManager;
 
 class NamespaceManagerTest extends \PHPUnit_Framework_TestCase
 {
-    protected $manager;
+    protected $namespaceManager;
 
     public function setUp()
     {

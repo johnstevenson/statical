@@ -1,11 +1,25 @@
 <?php
 namespace Statical\Tests;
 
-use Statical\Tests\Fixtures\TestBase;
+use Statical\Tests\Fixtures\Manager;
 use Statical\Tests\Fixtures\Utils;
 
-class ManagerTest extends TestBase
+class ManagerTest extends \PHPUnit_Framework_TestCase
 {
+    protected $manager;
+
+    public function setUp()
+    {
+        $this->manager = new Manager();
+    }
+
+    public function tearDown()
+    {
+        if ($this->manager) {
+            $this->manager->disable();
+        }
+    }
+
     /**
     * Test that proxy instance is registered correctly in the registry array.
     *

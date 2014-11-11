@@ -68,7 +68,7 @@ class BootTest extends \PHPUnit_Framework_TestCase
         $instance = Utils::fooInstance();
 
         $manager->addProxyInstance($alias, $proxy, $instance);
-        $this->assertFalse(class_exists('\Foo'));
+        $this->assertFalse(class_exists(__NAMESPACE__.'\\Foo'), false);
     }
 
     /**

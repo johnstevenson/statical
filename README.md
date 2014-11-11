@@ -14,14 +14,22 @@ PHP static proxy library.
 ## About
 
 **Statical** is a tiny PHP library that enables you to call class methods from a static accessor, so
-the call to `Foo::doSomething()` actually invokes the `doSomething()` method of a specific class
-instance. This works by registering the class instance as the target of a static proxy named
-*Foo*, or rather an alias to the proxy, since the *Foo* static class does not need to exist.
+the static call to `Foo::doSomething()` actually invokes the `doSomething()` method of a specific class
+instance. To show a more concrete example:
+
+```php
+// Normal access
+$view = $app->get('view');
+$view->render('mytemplate', $data);
+
+// Using Statical
+View::render('mytemplate', $data);
+```
 
 This may or may not be a good thing and depends entirely on your point of view and requirements.
 
 ### How it Works
-Everything runs through a `Statical\Manager` instance which needs three pieces of data to register
+Everything runs through a `Statical\Manager` instance which needs at least three pieces of data to register
 each static proxy:
 
 * an alias
@@ -29,7 +37,7 @@ each static proxy:
 * a target class
 
 An **alias** is the short name you use to access your *target class* instance and call its
-methods, for example `Foo`, `Config` or whatever. It is actually an alias to your *proxy class*,
+methods, for example `Foo`, `View` or whatever. It is actually an alias to your *proxy class*,
 which in turn calls your *target class* instance.
 
 A **proxy class** is a static class that extends the abstract `Statical\BaseProxy` class and
@@ -38,9 +46,7 @@ an empty class, like this:
 
 
 ```
-class FooProxy extends \Statical\BaseProxy
-{
-}
+class FooProxy extends \Statical\BaseProxy {}
 ```
 
 A **target class** is the instantiated class whose methods you wish to call. It can be either:
@@ -66,9 +72,8 @@ call `Foo` in any *App\\Library\\...* namespace.
 ### Features
 A few features in no particular order. Please see the [documentation][wiki] for more information.
 
-- **Statical** allows you to create a static proxy to itself with `addProxySelf`. By default this
-is aliased as *Statical* and you can pass in a namespace pattern. Now you can call the Manager
-with `Statical::addProxyService(...)` or whatever.
+- **Statical** creates a static proxy to itself, aliased as *Statical* and available in any namespace. Now you can call the Manager
+with `Statical::addProxyService(...)` or whatever. This feature can be disabled or modified as required.
 
 - You can use multiple containers when adding proxy services to the Manager.
 
@@ -85,7 +90,7 @@ replace a proxy by registering a different instance/container with the same alia
 ## Usage
 If you downloaded the library through [composer][composer] then you must add
 `require 'vendor/autoload.php'` somewhere in your bootstrap code. Otherwise you must point a PSR
-autoloader to the `src` directory. Below are a couple of quick examples. Firstly, using a class
+autoloader to the `src` directory. Below are some quick examples. Firstly, using a class
 instance:
 
 ```php
@@ -100,9 +105,6 @@ $manager new Statical\Manager();
 # Add proxy instance
 $manager->addProxyInstance($alias, $proxy, $instance);
 
-# Call enable to register the alias autoloader
-$manager->enable();
-
 # Now we can call MyClass methods via the static alias Foo
 Foo::doSomething();
 ```
@@ -114,11 +116,11 @@ For a container or service locator you would do the following:
 $alias = 'Foo';
 $proxy = 'Name\\Space\\FooProxy';
 
-# Add MyClass to the container/service locator
-# Note that the id is not related to the alias
+# Add MyService to the container/service locator
+# Note that in this case the id is not related to the alias
 $id = 'bar';
 $container->set($id, function ($c) {
-  return new MyClass();
+  return new MyService($c);
 });
 
 # Create our Manager
@@ -126,10 +128,34 @@ $manager new Statical\Manager();
 
 # Add proxy service
 $manager->addProxyService($alias, $proxy, $container, $id);
-$manager->enable();
 
-# MyClass is resolved from the container each time Foo is called
+# MyService is resolved from the container each time Foo is called
 Foo::doSomething();
+
+```
+
+As above but where the container id is a lower-cased version of the alias:
+
+```php
+<?php
+$alias = 'View';
+$proxy = 'Name\\Space\\ViewProxy';
+
+# Add MyView to the container/service locator
+$id = 'view';
+$container->set($id, function ($c) {
+  return new MyView($c);
+});
+
+# Create our Manager
+$manager new Statical\Manager();
+
+# Add proxy service
+$manager->addProxyService($alias, $proxy, $container);
+
+# MyView is resolved from the container each time View is called
+View::doSomething();
+
 ```
 Full usage [documentation][wiki] can be found in the Wiki.
 

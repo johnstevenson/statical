@@ -1,14 +1,21 @@
 <?php
 namespace Statical\Tests;
 
-use Statical\Tests\Fixtures\TestBase;
+use Statical\Manager;
 use Statical\Tests\Fixtures\Utils;
 
 /**
  * @runTestsInSeparateProcesses
  */
-class NamespaceTest extends TestBase
+class NamespaceTest extends \PHPUnit_Framework_TestCase
 {
+    protected $manager;
+
+    public function setUp()
+    {
+        $this->manager = new Manager('enable');
+    }
+
     /**
     * Test Foo can be called in Statical\\Tests namespace
     *

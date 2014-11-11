@@ -6,7 +6,7 @@ use Statical\Tests\Fixtures\Utils;
 
 class AliasManagerTest extends \PHPUnit_Framework_TestCase
 {
-    protected $manager;
+    protected $aliasManager;
 
     public function setUp()
     {

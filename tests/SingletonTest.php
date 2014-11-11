@@ -1,17 +1,12 @@
 <?php
 namespace Statical\Tests;
 
-use Statical\Tests\Fixtures\TestBase;
-use Statical\Tests\Fixtures\Manager;
-
-require 'bootstrap.php';
+use Statical\Manager;
 
 /**
  * @runTestsInSeparateProcesses
- * @backupGlobals disabled
- * @preserveGlobalState disabled
  */
-class SingletonTest extends TestBase
+class SingletonTest extends \PHPUnit_Framework_TestCase
 {
     /**
     * Test that we can create a new manager if we are not set as a singleton.
@@ -19,8 +14,9 @@ class SingletonTest extends TestBase
     */
     public function testCreateNewNoSingleton()
     {
+        $manager = new Manager();
         $newManager = new Manager();
-        $this->assertNotSame($this->manager, $newManager);
+        $this->assertNotSame($manager, $newManager);
     }
 
     /**
@@ -30,7 +26,8 @@ class SingletonTest extends TestBase
     */
     public function testCreateNewFailsWhenSingleton()
     {
-        $this->manager->makeSingleton();
+        $manager = new Manager();
+        $manager->makeSingleton();
         $newManager = new Manager();
     }
 }

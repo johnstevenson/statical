@@ -12,9 +12,4 @@ class Manager extends \Statical\Manager
     {
         return $this->$property;
     }
-
-    public function sayHello()
-    {
-        return 'Hello';
-    }
 }

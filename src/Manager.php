@@ -57,14 +57,19 @@
     /**
     * Registers ourself as a proxy and enables the service.
     *
-    * The Manager is aliased as Statical and available in any namespace.
+    * The Manager is aliased as Statical.
     *
+    * @param string|array|null $namespace
     * @return void
     */
-    public function addProxySelf()
+    public function addProxySelf($namespace = null)
     {
         $this->addProxyInstance('Statical', 'Statical\\StaticalProxy', $this);
-        $this->addNamespace('Statical', '*');
+
+        if ($namespace) {
+            $this->addNamespace('Statical', $namespace);
+        }
+
         $this->enable();
     }
 
@@ -73,7 +78,7 @@
     *
     * @param string $alias
     * @param string $proxy
-    * @param callable $container
+    * @param object|array $container
     * @param string|null $id
     * @param string|array|null $namespace
     */
@@ -224,7 +229,7 @@
             case 'none':
                 break;
             case 'self':
-                $this->addProxySelf();
+                $this->addProxySelf('*');
                 break;
             default:
                 throw new \InvalidArgumentException('Unknown boot value: '.$value);

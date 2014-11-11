@@ -1,22 +1,23 @@
 <?php
 namespace Statical\Tests;
 
-use Statical\Tests\Fixtures\TestBase;
+use Statical\Manager;
 use Statical\Tests\Fixtures\Utils;
 
 /**
  * @runTestsInSeparateProcesses
  */
-class ProxyTest extends TestBase
+class ProxyTest extends \PHPUnit_Framework_TestCase
 {
+    protected $manager;
     protected $fooInstance;
     protected $barInstance;
 
     public function setUp()
     {
+        $this->manager = new Manager('enable');
         $this->fooInstance = Utils::fooInstance();
         $this->barInstance = Utils::barInstance();
-        parent::setUp();
     }
 
     /**
@@ -309,13 +310,22 @@ class ProxyTest extends TestBase
     }
 
     /**
+    * Test addProxySelf allows us to use Statical alias in global namespace
+    *
+    */
+    public function testAddProxySelfGlobal()
+    {
+        $this->manager->addProxySelf();
+        $this->assertSame($this->manager, \Statical::getInstance());
+    }
+
+    /**
     * Test addProxySelf allows us to use Statical alias in any namespace
     *
     */
-    public function testAddProxySelf()
+    public function testAddProxySelfAny()
     {
-        $manager = new \Statical\Manager('none');
-        $manager->addProxySelf();
-        $this->assertSame($manager, Statical::getInstance());
+        $this->manager->addProxySelf('*');
+        $this->assertSame($this->manager, Statical::getInstance());
     }
 }
