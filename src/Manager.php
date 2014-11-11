@@ -39,7 +39,6 @@
     /**
     * Constructor - will throw an exception if we have been set as a singleton.
     *
-    * @param array $config
     * @throws RuntimeException
     */
     public function __construct()
@@ -73,9 +72,9 @@
     * @param string $proxy
     * @param callable $container
     * @param string|null $id
-    * @param array $namespace
+    * @param string|array|null $namespace
     */
-    public function addProxyService($alias, $proxy, $container, $id = null, $namespace = array())
+    public function addProxyService($alias, $proxy, $container, $id = null, $namespace = null)
     {
         $proxy = Input::checkNamespace($proxy);
         $container = Input::checkContainer($container);
@@ -94,10 +93,10 @@
     *
     * @param string $alias
     * @param string $proxy
-    * @param object $target
-    * @param array $namespace
+    * @param object|closure $target
+    * @param string|array|null $namespace
     */
-    public function addProxyInstance($alias, $proxy, $target, $namespace = array())
+    public function addProxyInstance($alias, $proxy, $target, $namespace = null)
     {
         $proxy = Input::checkNamespace($proxy);
 

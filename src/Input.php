@@ -58,7 +58,7 @@
     /**
     * Checks that the container is valid
     *
-    * @param mixed $container
+    * @param object|callable $container
     * @throws InvalidArgumentException
     * @return callable
     */
@@ -71,39 +71,6 @@
         }
 
         return $result;
-    }
-
-    /**
-    * Extracts a config value and checks its type against the default.
-    *
-    * @param array $config
-    * @param string $key
-    * @param mixed $default
-    * @throws InvalidArgumentException
-    * @return mixed
-    */
-    public static function checkConfig($config, $key, $default)
-    {
-        $value = static::get($config, $key, $default);
-
-        if (!is_null($default) && gettype($default) !== gettype($value)) {
-            throw new \InvalidArgumentException('Invalid value for config ' . $key);
-        }
-
-        return $value;
-    }
-
-    /**
-    * Returns a value from an array if the key exists, otherwise the default.
-    *
-    * @param array $array
-    * @param string|integer $key
-    * @param mixed $default
-    * @return mixed
-    */
-    public static function get($array, $key, $default)
-    {
-        return isset($array[$key]) ? $array[$key] : $default;
     }
 
     /**
