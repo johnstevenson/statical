@@ -70,14 +70,4 @@ class BootTest extends \PHPUnit_Framework_TestCase
         $manager->addProxyInstance($alias, $proxy, $instance);
         $this->assertFalse(class_exists(__NAMESPACE__.'\\Foo'), false);
     }
-
-    /**
-    * Test invalid boot value from constructor.
-    *
-    * @expectedException InvalidArgumentException
-    */
-    public function testBootInvalid()
-    {
-        $manager = new Manager('');
-    }
 }

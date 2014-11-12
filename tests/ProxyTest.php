@@ -238,6 +238,26 @@ class ProxyTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+    * Test we can add a proxy service without passing an id
+    *
+    */
+    public function testAddProxyServiceNoId()
+    {
+        $alias = 'Foo';
+        $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
+        $id = 'foo';
+        $container = Utils::container();
+        $namespace = 'Statical\\Tests';
+
+        // Set the instance in the container and register it with the namespace
+        $container->set($id, $this->fooInstance);
+        $this->manager->addProxyService($alias, $proxy, $container, null, $namespace);
+
+        $expected = get_class($this->fooInstance);
+        $this->assertEquals($expected, Foo::getClass());
+    }
+
+    /**
     * Test we can add a proxy service with a namespace
     *
     */

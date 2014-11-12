@@ -4,7 +4,10 @@ namespace Statical\Tests;
 use Statical\Tests\Fixtures\Manager;
 use Statical\Tests\Fixtures\Utils;
 
-class ManagerTest extends \PHPUnit_Framework_TestCase
+/**
+* These tests call Statical\Manager::addProxy
+*/
+class AddProxyTest extends \PHPUnit_Framework_TestCase
 {
     protected $manager;
 

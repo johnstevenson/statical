@@ -37,13 +37,16 @@
     public static $singleton = false;
 
     /**
-    * Constructor - will throw an exception if we have been set as a singleton.
+    * Constructor.
     *
-    * @param string $boot
-    * @param boolean $namespacing
-    * @throws RuntimeException
+    * The optional params allow the default way to start the Manager to be
+    * overriden.
+    *
+    * @param string|null $bootMode Either 'enable' or 'none' if specified
+    * @param boolean $namespacing Whether namespacing should be allowed
+    * @throws RuntimeException if we we have been set as a singleton
     */
-    public function __construct($boot = 'self', $namespacing = true)
+    public function __construct($bootMode = null, $namespacing = true)
     {
         if (static::$singleton) {
             throw new \RuntimeException(__CLASS__ . ' has been set as a singleton.');
@@ -51,13 +54,11 @@
 
         BaseProxy::setResolver($this);
         $this->aliasManager = new AliasManager($namespacing);
-        $this->boot($boot);
+        $this->boot($bootMode);
     }
 
     /**
-    * Registers ourself as a proxy and enables the service.
-    *
-    * The Manager is aliased as Statical.
+    * Registers ourself as a proxy, aliased as Statical, and enables the service.
     *
     * @param string|array|null $namespace
     * @return void
@@ -134,7 +135,13 @@
     /**
     * Enables static proxying by registering the autoloader.
     *
-    * Ensures that the autoloader is always at the end of the stack.
+    * Ensures that the autoloader is always at the end of the stack. This can
+    * be useful if another part of the code base adds its own autoloader after
+    * the Statical one. Keeping the autoloader at the end reduces the risk of
+    * conflicts with other libraries.
+    *
+    * This method can be called multiple times, because it does nothing if
+    * the autoloader is in its correct place.
     *
     * @return void
     */
@@ -145,6 +152,10 @@
 
     /**
     * Disables static proxying.
+    *
+    * Included for completeness, in case there is a rewquirement to stop
+    * Statical. The autoloder is removed from the stack, but this will not
+    * affect any classes that have already been loaded.
     *
     * @return void
     */
@@ -194,7 +205,7 @@
     /**
     * Adds a proxy to the registry array
     *
-    * Since this is caled internally it assumes that the inputs are correct.
+    * Since this is called internally it assumes that the inputs are correct.
     *
     * @param string $proxy
     * @param string $id
@@ -214,25 +225,22 @@
     }
 
     /**
-    * Enables static proxying when we create the manager.
+    * Starts the Manager with either the default or more restricted settings.
     *
-    * @param string $value
-    * @throws InvalidArgumentException
+    * @param string|null $bootMode
     * $return void
     */
-    protected function boot($value)
+    protected function boot($bootMode)
     {
-        switch ($value) {
+        switch ($bootMode) {
             case 'enable':
                 $this->enable();
                 break;
             case 'none':
                 break;
-            case 'self':
+            default:
                 $this->addProxySelf('*');
                 break;
-            default:
-                throw new \InvalidArgumentException('Unknown boot value: '.$value);
         }
     }
  }
