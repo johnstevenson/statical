@@ -37,19 +37,19 @@ each static proxy:
 * a proxy class *(which invokes the method in)*
 * the target class
 
-An **alias** is the short name you use for method calling - `Foo`, `View` or whatever.
+An **alias** is the short name you use for method calling: `Foo`, `View` or whatever.
 
-You create a **proxy class**, as shown below. Its name is irrelevant and it is normally empty:
+You create a static **proxy class** like this. Note that its name is irrelevant and it is normally empty:
 
 ```
 class FooProxy extends \Statical\BaseProxy {}
 ```
 
-A **target class** is the instantiated class whose methods you wish to call. It can be either:
+A **target class** is the class whose methods you wish to call. It can be either:
 
-* an actual instance
-* a closure invoking an instance
-* a reference to an object in a container or service-locator.
+* an actual class instance
+* a closure invoking a class instance
+* a reference to something in a container or service-locator that resolves to a class instance.
 
 This data is then registered using either the `addProxyInstance()` or the `addProxyService()` methods.
 See the [Usage](#Usage) section for some examples.
@@ -100,7 +100,7 @@ $proxy = 'Name\\Space\\FooInstance';
 $instance = new FooClass();
 
 # Create our Manager
-$manager new Statical\Manager();
+$manager = new Statical\Manager();
 
 # Add proxy instance
 $manager->addProxyInstance($alias, $proxy, $instance);
@@ -125,7 +125,7 @@ $container->set($id, function ($c) {
 });
 
 # Create our Manager
-$manager new Statical\Manager();
+$manager = new Statical\Manager();
 
 # Add proxy service
 $manager->addProxyService($alias, $proxy, $container, $id);
@@ -153,7 +153,7 @@ $manager->addProxyService($alias, $proxy, $container);
 ```
 
 In the above examples, the service is resolved out of the container automatically. If the container
-doesn't implement `ArrayAccess` or have a `get` method, you need to pass a callable:
+doesn't implement `ArrayAccess` or doesn't have a `get` method, you need to pass a callable:
 
 ```php
 <?php

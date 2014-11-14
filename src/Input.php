@@ -58,7 +58,7 @@
     /**
     * Checks that the container is valid
     *
-    * @param object|array $container
+    * @param mixed $container
     * @throws InvalidArgumentException
     * @return callable
     */
@@ -92,7 +92,7 @@
     /**
     * Formats a container param as a callable.
     *
-    * @param object|array $container
+    * @param mixed $container
     * @return callable
     */
     protected static function formatContainer($container)

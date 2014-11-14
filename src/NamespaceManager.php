@@ -26,7 +26,7 @@
     * Adds a namespace
     *
     * @param string $alias
-    * @param string|array $namespace
+    * @param mixed $namespace Either a string or array of namespaces
     */
     public function add($alias, $namespace)
     {

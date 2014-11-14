@@ -39,10 +39,23 @@
     /**
     * Constructor.
     *
+    * Creating more than one instance could lead to unpredictable behaviour.
+    * To enforce a singleton pattern call the makeSingleton() method.
+    *
     * The optional params allow the default way to start the Manager to be
     * overriden.
     *
-    * @param string|null $bootMode Either 'enable' or 'none' if specified
+    * By default the service will be enabled and a proxy to ourself will be
+    * created, aliased as Statical and available in any namespace. To modify
+    * this behaviour pass one of the following to $bootMode:
+    *
+    *   'enable'    - the service is enabled
+    *   'none'      - no action, the implementation must to call enable()
+    *
+    * The namespacing feature is on by default, but can be disabled here if it
+    * is not required, or suitable.
+    *     *
+    * @param mixed $bootMode Either 'enable' or 'none' if specified
     * @param boolean $namespacing Whether namespacing should be allowed
     * @throws RuntimeException if we we have been set as a singleton
     */
@@ -60,7 +73,7 @@
     /**
     * Registers ourself as a proxy, aliased as Statical, and enables the service.
     *
-    * @param string|array|null $namespace
+    * @param mixed $namespace Either a string or array of namespaces
     * @return void
     */
     public function addProxySelf($namespace = null)
@@ -77,11 +90,13 @@
     /**
     * Adds a service as a proxy target
     *
-    * @param string $alias
-    * @param string $proxy
-    * @param object|array $container
-    * @param string|null $id
-    * @param string|array|null $namespace
+    * If $id is null then the lower-cased alias will be used.
+    *
+    * @param string $alias The statical name you call
+    * @param string $proxy The namespaced proxy class
+    * @param mixed $container Reference to a container
+    * @param mixed $id The id of the target in the container
+    * @param mixed $namespace Optional namespace
     */
     public function addProxyService($alias, $proxy, $container, $id = null, $namespace = null)
     {
@@ -100,10 +115,10 @@
     /**
     * Adds an instance or closure as a proxy target
     *
-    * @param string $alias
-    * @param string $proxy
-    * @param object|closure $target
-    * @param string|array|null $namespace
+    * @param string $alias The statical name you call
+    * @param string $proxy The namespaced proxy class
+    * @param mixed $target The target instance of closure
+    * @param mixed $namespace Optional namespace
     */
     public function addProxyInstance($alias, $proxy, $target, $namespace = null)
     {
@@ -122,10 +137,20 @@
     }
 
     /**
-    * Adds a namespace
+    * Adds a namespace for a single, or all aliases
+    *
+    * The $alias can either be a single value or the wildcard '*' value, which
+    * allows any registered alias in the namespace.
+    *
+    * Namespaces can either be a single string value or an array of values and
+    * are formatted as follows:
+    *
+    *   'App'     - the alias can be called in the App namespace
+    *   'App\\*'  - the alias can be called in the App and any App\... namespace
+    *   '*'       - the alias can be called in any namespace
     *
     * @param string $alias
-    * @param string|array $namespace
+    * @param mixed $namespace Either a string or array of namespaces
     */
     public function addNamespace($alias, $namespace)
     {
@@ -153,8 +178,8 @@
     /**
     * Disables static proxying.
     *
-    * Included for completeness, in case there is a rewquirement to stop
-    * Statical. The autoloder is removed from the stack, but this will not
+    * Included for completeness, in case there is a requirement to stop
+    * Statical. The autoloader is removed from the stack, but this will not
     * affect any classes that have already been loaded.
     *
     * @return void
@@ -178,6 +203,8 @@
 
     /**
     * Returns the target instance of the static proxy.
+    *
+    * This function is called from Statical\BaseProxy to resolve proxy targets.
     *
     * @param string $class
     * @throws RuntimeException
@@ -209,7 +236,7 @@
     *
     * @param string $proxy
     * @param string $id
-    * @param callable|null $target
+    * @param mixed $target
     * @return void
     */
     protected function addProxy($proxy, $id, $target)
@@ -227,18 +254,21 @@
     /**
     * Starts the Manager with either the default or more restricted settings.
     *
-    * @param string|null $bootMode
+    * @param mixed $bootMode
     * $return void
     */
     protected function boot($bootMode)
     {
         switch ($bootMode) {
             case 'enable':
+                // Enable the service
                 $this->enable();
                 break;
             case 'none':
+                // Do nothing, the implementation will deal with it
                 break;
             default:
+                // Enable the service and register ourself in any namespace
                 $this->addProxySelf('*');
                 break;
         }

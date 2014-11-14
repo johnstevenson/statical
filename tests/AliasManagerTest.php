@@ -4,6 +4,10 @@ namespace Statical\Tests;
 use Statical\Tests\Fixtures\AliasManager;
 use Statical\Tests\Fixtures\Utils;
 
+/**
+* These tests do not need a separate process because although they do stuff
+* with the autoload stack they do not actually make calls to load classes.
+*/
 class AliasManagerTest extends \PHPUnit_Framework_TestCase
 {
     protected $aliasManager;
@@ -11,7 +15,6 @@ class AliasManagerTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->aliasManager = new AliasManager(true);
-        Utils::unregisterAppLoader();
     }
 
     /**
@@ -87,6 +90,7 @@ class AliasManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->loaderRegistered());
         $this->assertTrue($this->loaderLast());
 
+        // register a new loader - it will be at the end of the stack
         Utils::registerAppLoader();
 
         // test that the loader is still registered and is no longer at the end
@@ -98,6 +102,9 @@ class AliasManagerTest extends \PHPUnit_Framework_TestCase
         // test that the loader has been re-registered on the end
         $this->assertTrue($this->loaderRegistered());
         $this->assertTrue($this->loaderLast());
+
+        // unregister new loader
+        Utils::unregisterAppLoader();
     }
 
     /**
@@ -121,29 +128,31 @@ class AliasManagerTest extends \PHPUnit_Framework_TestCase
     */
     public function testDisableAddsAutoloadIfEmpty()
     {
+        // load a dummy __autoload
         Utils::requireAutoload();
 
-        // Clear autoload stack
-        $funcs = spl_autoload_functions();
-        foreach ($funcs as $loader) {
+        // Clear autoload stack and store in oldStack
+        $oldStack = spl_autoload_functions();
+        foreach ($oldStack as $loader) {
             spl_autoload_unregister($loader);
         }
 
+        // add our autoloader
         $this->aliasManager->enable();
-        $beforeCount = count(spl_autoload_functions());
+        $this->assertEquals(1, count(spl_autoload_functions()));
 
+        // remove our autoloader
         $this->aliasManager->disable();
-        $new = spl_autoload_functions();
-        $newCount = count($new);
 
-        // Replace autoload stack
-        foreach ($funcs as $loader) {
+        // check we only have __autoload of the stack
+        $newStack = spl_autoload_functions();
+        $this->assertEquals(1, count($newStack));
+        $this->assertEquals($newStack[0], '__autoload');
+
+        // Replace original autoload stack
+        foreach ($oldStack as $loader) {
             spl_autoload_register($loader);
         }
-
-        $this->assertEquals(1, $beforeCount);
-        $this->assertEquals(1, $newCount);
-        $this->assertEquals($new[0], '__autoload');
     }
 
     protected function loaderRegistered()
