@@ -50,11 +50,11 @@
     * this behaviour pass one of the following to $bootMode:
     *
     *   'enable'    - the service is enabled
-    *   'none'      - no action, the implementation must to call enable()
+    *   'none'      - no action, the implementation must call enable()
     *
     * The namespacing feature is on by default, but can be disabled here if it
     * is not required, or suitable.
-    *     *
+    *
     * @param mixed $bootMode Either 'enable' or 'none' if specified
     * @param boolean $namespacing Whether namespacing should be allowed
     * @throws RuntimeException if we we have been set as a singleton
@@ -117,7 +117,7 @@
     *
     * @param string $alias The statical name you call
     * @param string $proxy The namespaced proxy class
-    * @param mixed $target The target instance of closure
+    * @param mixed $target The target instance or closure
     * @param mixed $namespace Optional namespace
     */
     public function addProxyInstance($alias, $proxy, $target, $namespace = null)

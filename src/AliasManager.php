@@ -60,7 +60,6 @@
     /**
     * Adds a class alias to the aliases array
     *
-    * Assumes that the inputs are correct.
     *
     * @param string $original
     * @param string $alias
@@ -141,13 +140,25 @@
     */
     protected function getNamespaceAlias($class)
     {
-        $alias = basename(str_replace('\\', '/', $class));
-
-        if (isset($this->aliases[$alias])) {
+        if ($alias = $this->getRegisteredAlias($class)) {
             if ($this->namespacer->match($alias, $class)) {
                 return $alias;
             }
         }
+    }
+
+    /**
+    * Returns the class alias if it is registered.
+    *
+    * @param string $class
+    * @return string|null
+    */
+    protected function getRegisteredAlias($class)
+    {
+        // Normalize to Unix path so we can use basename to remove the namespace
+        $alias = basename(str_replace('\\', '/', $class));
+
+        return isset($this->aliases[$alias]) ? $alias : null;
     }
 
     /**
@@ -174,9 +185,7 @@
     }
 
     /**
-    * Checks if we have emptied the stack.
-    *
-    * Re-registers __autoload function if it exists.
+    * Re-registers __autoload function if we have emptied the stack.
     *
     * @return void
     */
