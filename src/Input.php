@@ -56,6 +56,24 @@
     }
 
     /**
+    * Checks that group is valid.
+    *
+    * @param string $value
+    * @throws InvalidArgumentException
+    * @return string
+    */
+    public static function checkNamespaceGroup($value)
+    {
+        $groups = array('any', 'base', 'root');
+
+        if (!in_array($value, $groups, true)) {
+            throw new \InvalidArgumentException('Invalid namespace group.');
+        }
+
+        return $value;
+    }
+
+    /**
     * Checks that the container is valid
     *
     * @param mixed $container

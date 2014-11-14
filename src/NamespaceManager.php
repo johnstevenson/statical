@@ -38,7 +38,8 @@
             $group = $this->getNamespaceGroup($ns);
 
             if ('any' === $group) {
-                $props['any'] = true;
+                $props = $this->setGroupAny();
+                break;
             } else {
                 // trim trailing * from base pattern
                 $ns = 'base' === $group ? rtrim($ns, '*') : $ns;
@@ -50,6 +51,34 @@
     }
 
     /**
+    * Adds a namespace group
+    *
+    * @param string $group
+    * @param string $alias
+    * @param mixed $namespace string, array of namespaces or null
+    */
+    public function addGroup($group, $alias, $namespace)
+    {
+        $group = Input::checkNamespaceGroup($group);
+        $alias = Input::checkAlias($alias);
+
+        if ('any' === $group) {
+            $props = $this->setGroupAny();
+        } else {
+            $props = $this->getNamespace($alias, true);
+            $namespace = (array) $namespace;
+
+            foreach ($namespace as $ns) {
+                $namespace = Input::checkNamespace($ns);
+                $props[$group][] = $ns;
+            }
+        }
+
+        $this->setNamespace($alias, $props);
+    }
+
+
+    /**
     * Returns true if a matching namespace is found.
     *
     * @param string $alias
@@ -58,19 +87,15 @@
     */
     public function match($alias, $class)
     {
-        $result = false;
-
         foreach (array('*', $alias) as $key) {
             if ($props = $this->getNamespace($key)) {
-                $result = $this->matchGroup($props, $alias, $class);
-            }
-
-            if ($result) {
-                break;
+                if ($this->matchGroup($props, $alias, $class)) {
+                    return true;
+                }
             }
         }
 
-        return $result;
+        return false;
     }
 
     /**
@@ -185,6 +210,19 @@
         } else {
             $group = 'root';
         }
+
+        return $group;
+    }
+
+    /**
+    * Sets a namespace property group to any.
+    *
+    * @return array
+    */
+    protected function setGroupAny()
+    {
+        $group = $this->getDefaultGroups();
+        $group['any'] = true;
 
         return $group;
     }

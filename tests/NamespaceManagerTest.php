@@ -43,7 +43,7 @@ class NamespaceManagerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test addNamespace throws an exception with leading backslash namespace.
+     * Test addNamespace throws an exception with a namespaced alias.
      *
      * @expectedException InvalidArgumentException
      */

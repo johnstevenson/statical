@@ -20,7 +20,7 @@ class NamespaceTest extends \PHPUnit_Framework_TestCase
     * Test Foo can be called in Statical\\Tests namespace
     *
     */
-    public function testNamespaceRoot()
+    public function testAddNamespaceRoot()
     {
         $alias = 'Foo';
         $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
@@ -37,7 +37,7 @@ class NamespaceTest extends \PHPUnit_Framework_TestCase
     * Test Foo can be called in Statical\\* namespace
     *
     */
-    public function testNamespaceBase()
+    public function testAddNamespaceBase()
     {
         $alias = 'Foo';
         $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
@@ -54,7 +54,7 @@ class NamespaceTest extends \PHPUnit_Framework_TestCase
     * Test Foo can be called in * namespace
     *
     */
-    public function testNamespaceAny()
+    public function testAddNamespaceAny()
     {
         $alias = 'Foo';
         $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
@@ -68,10 +68,61 @@ class NamespaceTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+    * Test Foo can be called in Statical\\Tests namespace
+    *
+    */
+    public function testAddNamespaceGroupRoot()
+    {
+        $alias = 'Foo';
+        $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
+        $instance = new \Statical\Tests\Fixtures\Foo();
+
+        $this->manager->addProxyInstance($alias, $proxy, $instance);
+        $this->manager->addNamespaceGroup('root', 'Foo', 'Statical\\Tests');
+
+        $expected = get_class($instance);
+        $this->assertEquals($expected, Foo::getClass());
+    }
+
+    /**
+    * Test Foo can be called in Statical\\* namespace
+    *
+    */
+    public function testAddNamespaceGroupBase()
+    {
+        $alias = 'Foo';
+        $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
+        $instance = new \Statical\Tests\Fixtures\Foo();
+
+        $this->manager->addProxyInstance($alias, $proxy, $instance);
+        $this->manager->addNamespaceGroup('base', 'Foo', 'Statical');
+
+        $expected = get_class($instance);
+        $this->assertEquals($expected, Foo::getClass());
+    }
+
+    /**
+    * Test Foo can be called in * namespace
+    *
+    */
+    public function testAddNamespaceGroupAny()
+    {
+        $alias = 'Foo';
+        $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
+        $instance = new \Statical\Tests\Fixtures\Foo();
+
+        $this->manager->addProxyInstance($alias, $proxy, $instance);
+        $this->manager->addNamespaceGroup('any', 'Foo');
+
+        $expected = get_class($instance);
+        $this->assertEquals($expected, Foo::getClass());
+    }
+
+    /**
     * Test * can be called in Statical\\Tests namespace
     *
     */
-    public function testNamespaceGlobal()
+    public function testAddNamespaceGlobal()
     {
         $alias = 'Foo';
         $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
@@ -88,7 +139,7 @@ class NamespaceTest extends \PHPUnit_Framework_TestCase
     * Test Foo can be called from multiple namespaces
     *
     */
-    public function testNamespaceMultiple()
+    public function testAddNamespaceMultiple()
     {
         $alias = 'Foo';
         $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';

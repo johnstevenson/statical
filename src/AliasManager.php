@@ -83,6 +83,18 @@
     }
 
     /**
+    * Adds a namespace group
+    *
+    * @param string $group
+    * @param string $alias
+    * @param mixed $namespace string, array of namespaces or null
+    */
+    public function addNamespaceGroup($group, $alias, $namespace)
+    {
+        $this->namespacer->addGroup($group, $alias, $namespace);
+    }
+
+    /**
     * Enables static proxying by registering the autoloader.
     *
     * Ensures that the autoloader is always at the end of the stack.
