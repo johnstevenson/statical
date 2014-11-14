@@ -56,24 +56,6 @@
     }
 
     /**
-    * Checks that group is valid.
-    *
-    * @param string $value
-    * @throws InvalidArgumentException
-    * @return string
-    */
-    public static function checkNamespaceGroup($value)
-    {
-        $groups = array('any', 'base', 'root');
-
-        if (!in_array($value, $groups, true)) {
-            throw new \InvalidArgumentException('Invalid namespace group.');
-        }
-
-        return $value;
-    }
-
-    /**
     * Checks that the container is valid
     *
     * @param mixed $container
@@ -92,6 +74,23 @@
     }
 
     /**
+    * Formats and returns a namespace param.
+    *
+    * @param mixed $namespace Either a string or array of namespaces
+    * @param mixed $group
+    */
+    public static function formatNamespace($namespace, $group = null)
+    {
+        $namespace = (array) $namespace;
+
+        if ($group) {
+            $namespace = static::formatNamespaceGroup($namespace, $group);
+        }
+
+        return $namespace;
+    }
+
+    /**
     * Checks that a value is a string and not empty
     *
     * @param string $value
@@ -102,6 +101,24 @@
     {
         if (!is_string($value) || !$value) {
             throw new \InvalidArgumentException('Empty or invalid value.');
+        }
+
+        return $value;
+    }
+
+    /**
+    * Checks that group is valid.
+    *
+    * @param string $value
+    * @throws InvalidArgumentException
+    * @return string
+    */
+    protected static function checkGroup($value)
+    {
+        $groups = array('any', 'base', 'root');
+
+        if (!in_array($value, $groups, true)) {
+            throw new \InvalidArgumentException('Invalid namespace group.');
         }
 
         return $value;
@@ -130,5 +147,29 @@
         }
 
         return array($instance, $method);
+    }
+
+    /**
+    * Formats and returns a namespace param.
+    *
+    * @param string[] $namespace
+    * @param string $group
+    */
+    protected static function formatNamespaceGroup(array $namespace, $group)
+    {
+        $group = static::checkGroup($group);
+
+        if ('any' === $group) {
+            $namespace = array('*');
+        } else {
+            foreach ($namespace as &$value) {
+                $value = static::checkNamespace($value);
+                if ('base' === $group) {
+                    $value .= '\\*';
+                }
+            }
+        }
+
+        return $namespace;
     }
  }

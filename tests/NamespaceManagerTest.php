@@ -2,6 +2,7 @@
 namespace Statical\Tests;
 
 use Statical\Tests\Fixtures\NamespaceManager;
+use Statical\Input;
 
 class NamespaceManagerTest extends \PHPUnit_Framework_TestCase
 {
@@ -19,7 +20,8 @@ class NamespaceManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddEmptyNamespace()
     {
-        $this->namespaceManager->add('Foo', '');
+        $namespace = Input::formatNamespace('');
+        $this->namespaceManager->add('Foo', $namespace);
     }
 
     /**
@@ -29,7 +31,8 @@ class NamespaceManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddInvalidNamespace1()
     {
-        $this->namespaceManager->add('Foo', '\\Bar\\Baz');
+        $namespace = Input::formatNamespace('\\Bar\\Baz');
+        $this->namespaceManager->add('Foo', $namespace);
     }
 
     /**
@@ -39,7 +42,8 @@ class NamespaceManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddInvalidNamespace2()
     {
-        $this->namespaceManager->add('Foo', 'Bar\\Baz\\');
+        $namespace = Input::formatNamespace('Bar\\Baz\\');
+        $this->namespaceManager->add('Foo', $namespace);
     }
 
     /**
@@ -49,7 +53,8 @@ class NamespaceManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddInvalidAlias()
     {
-        $this->namespaceManager->add('Foo\\Bar', 'Bar\\Baz');
+        $namespace = Input::formatNamespace('Bar\\Baz');
+        $this->namespaceManager->add('Foo\\Bar', $namespace);
     }
 
     /**
@@ -58,7 +63,8 @@ class NamespaceManagerTest extends \PHPUnit_Framework_TestCase
     */
     public function testAddItem()
     {
-        $this->namespaceManager->add('Foo', 'Bar\\Baz');
+        $namespace = Input::formatNamespace('Bar\\Baz');
+        $this->namespaceManager->add('Foo', $namespace);
         $this->assertCount(1, $this->namespaceManager->namespaces);
     }
 
@@ -68,7 +74,8 @@ class NamespaceManagerTest extends \PHPUnit_Framework_TestCase
     */
     public function testAddRoot()
     {
-        $this->namespaceManager->add('Foo', 'Bar\\Baz');
+        $namespace = Input::formatNamespace('Bar\\Baz');
+        $this->namespaceManager->add('Foo', $namespace);
         $this->assertContains('Bar\\Baz', $this->namespaceManager->namespaces['Foo']['root']);
     }
 
@@ -78,7 +85,8 @@ class NamespaceManagerTest extends \PHPUnit_Framework_TestCase
     */
     public function testAddBase()
     {
-        $this->namespaceManager->add('Foo', 'Bar\\Baz\\*');
+        $namespace = Input::formatNamespace('Bar\\Baz\\*');
+        $this->namespaceManager->add('Foo', $namespace);
         $this->assertContains('Bar\\Baz\\', $this->namespaceManager->namespaces['Foo']['base']);
     }
 
@@ -89,7 +97,8 @@ class NamespaceManagerTest extends \PHPUnit_Framework_TestCase
     public function testAddAny()
     {
         // Check we set * namespace to any
-        $this->namespaceManager->add('Foo', '*');
+        $namespace = Input::formatNamespace('*');
+        $this->namespaceManager->add('Foo', $namespace);
         $this->assertTrue($this->namespaceManager->namespaces['Foo']['any']);
     }
 
@@ -111,10 +120,11 @@ class NamespaceManagerTest extends \PHPUnit_Framework_TestCase
     */
     public function testAddUnique()
     {
-        $this->namespaceManager->add('Foo', 'Bar\\Baz\\*');
+        $namespace = Input::formatNamespace('Bar\\Baz\\*');
+        $this->namespaceManager->add('Foo', $namespace);
         $this->assertContains('Bar\\Baz\\', $this->namespaceManager->namespaces['Foo']['base']);
 
-        $this->namespaceManager->add('Foo', 'Bar\\Baz\\*');
+        $this->namespaceManager->add('Foo', $namespace);
         $this->assertContains('Bar\\Baz\\', $this->namespaceManager->namespaces['Foo']['base']);
         $this->assertCount(1, $this->namespaceManager->namespaces['Foo']['base']);
     }
@@ -126,10 +136,11 @@ class NamespaceManagerTest extends \PHPUnit_Framework_TestCase
     public function testGetNamespace()
     {
         $alias = 'Foo';
-        $namespace = 'Bar\\Baz';
+        $namespaceString = 'Bar\\Baz';
         $group = $this->namespaceManager->getDefaultGroups();
-        $group['root'][] = $namespace;
+        $group['root'][] = $namespaceString;
 
+        $namespace = Input::formatNamespace($namespaceString);
         $this->namespaceManager->add($alias, $namespace);
         $this->assertSame($group, $this->namespaceManager->getNamespace($alias, true));
     }
@@ -140,7 +151,8 @@ class NamespaceManagerTest extends \PHPUnit_Framework_TestCase
     */
     public function testGetNamespaceEmpty()
     {
-        $this->namespaceManager->add('Foo', 'Bar\\Baz');
+        $namespace = Input::formatNamespace('Bar\\Baz');
+        $this->namespaceManager->add('Foo', $namespace);
         $this->assertEmpty($this->namespaceManager->getNamespace('Bar'));
     }
 
@@ -150,7 +162,8 @@ class NamespaceManagerTest extends \PHPUnit_Framework_TestCase
     */
     public function testGetNamespaceEmptyWithDefault()
     {
-        $this->namespaceManager->add('Foo', 'Bar\\Baz');
+        $namespace = Input::formatNamespace('Bar\\Baz');
+        $this->namespaceManager->add('Foo', $namespace);
         $this->assertSame($this->namespaceManager->getDefaultGroups(),
             $this->namespaceManager->getNamespace('Bar', true));
     }
@@ -181,7 +194,8 @@ class NamespaceManagerTest extends \PHPUnit_Framework_TestCase
     public function testMatchRoot()
     {
         $alias = 'Foo';
-        $this->namespaceManager->add($alias, 'Bar');
+        $namespace = Input::formatNamespace('Bar');
+        $this->namespaceManager->add($alias, $namespace);
 
         $this->assertTrue($this->namespaceManager->match($alias, 'Bar\\Foo'));
     }
@@ -193,7 +207,8 @@ class NamespaceManagerTest extends \PHPUnit_Framework_TestCase
     public function testMatchBase()
     {
         $alias = 'Foo';
-        $this->namespaceManager->add($alias, 'Bar\\*');
+        $namespace = Input::formatNamespace('Bar\\*');
+        $this->namespaceManager->add($alias, $namespace);
 
         $this->assertTrue($this->namespaceManager->match($alias, 'Bar\\Baz\\Foo'));
     }
@@ -205,7 +220,8 @@ class NamespaceManagerTest extends \PHPUnit_Framework_TestCase
     public function testMatchAny()
     {
         $alias = 'Foo';
-        $this->namespaceManager->add($alias, '*');
+        $namespace = Input::formatNamespace('*');
+        $this->namespaceManager->add($alias, $namespace);
 
         $this->assertTrue($this->namespaceManager->match($alias, 'Bar\\Baz\\Foo'));
     }
@@ -216,7 +232,8 @@ class NamespaceManagerTest extends \PHPUnit_Framework_TestCase
     */
     public function testMatchGlobalAlias()
     {
-        $this->namespaceManager->add('*', 'Bar\\Baz');
+        $namespace = Input::formatNamespace('Bar\\Baz');
+        $this->namespaceManager->add('*', $namespace);
 
         $this->assertTrue($this->namespaceManager->match('Foo', 'Bar\\Baz\\Foo'));
     }
@@ -227,7 +244,8 @@ class NamespaceManagerTest extends \PHPUnit_Framework_TestCase
     */
     public function testMatchAliasFails()
     {
-        $this->namespaceManager->add('Foo', 'Bar\\Baz');
+        $namespace = Input::formatNamespace('Bar\\Baz');
+        $this->namespaceManager->add('Foo', $namespace);
         $this->assertFalse($this->namespaceManager->match('Foo', 'Bar\\Foo'));
     }
 }

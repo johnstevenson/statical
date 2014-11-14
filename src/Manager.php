@@ -142,7 +142,7 @@
     * The $alias can either be a single value or the wildcard '*' value, which
     * allows any registered alias in the namespace.
     *
-    * Namespaces can either be a single string value or an array of values and
+    * Namespace can either be a single string value or an array of values and
     * are formatted as follows:
     *
     *   'App'     - the alias can be called in the App namespace
@@ -150,23 +150,37 @@
     *   '*'       - the alias can be called in any namespace
     *
     * @param string $alias
-    * @param mixed $namespace Either a string or array of namespaces
+    * @param mixed $namespace
     */
     public function addNamespace($alias, $namespace)
     {
+        $namespace = Input::formatNamespace($namespace);
         $this->aliasManager->addNamespace($alias, $namespace);
     }
 
     /**
-    * Adds a namespace group
+    * Adds a namespace group for a single, or all aliases
+    *
+    * The $alias can either be a single value or the wildcard '*' value, which
+    * allows any registered alias in the namespace.
+    *
+    * The group can be one of the following:
+    *
+    *   'root'  - the alias can be called in the App namespace
+    *   'base'  - the alias can be called in the App and any App\... namespace
+    *   'any'   - the alias can be called in any namespace
+    *
+    * Namespace can either be a single string value, an array of values, or
+    * missing in the case of group 'any'.
     *
     * @param string $group
     * @param string $alias
-    * @param mixed $namespace string, array of namespaces or null
+    * @param mixed $namespace
     */
     public function addNamespaceGroup($group, $alias, $namespace = null)
     {
-        $this->aliasManager->addNamespaceGroup($group, $alias, $namespace);
+        $namespace = Input::formatNamespace($namespace, $group);
+        $this->aliasManager->addNamespace($alias, $namespace);
     }
 
     /**

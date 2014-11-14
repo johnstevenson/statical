@@ -44,7 +44,7 @@ class AliasManagerTest extends \PHPUnit_Framework_TestCase
         $original = 'Statical\\Tests\\Fixtures\\Foo';
         $alias = 'Foo';
         $this->aliasManager->add($original, $alias);
-        $this->aliasManager->addNamespace($alias, 'Bar\\Baz');
+        $this->aliasManager->addNamespace($alias, array('Bar\\Baz'));
 
         $this->assertEquals($alias,
             $this->aliasManager->getNamespaceAlias('Bar\\Baz\\Foo'));
@@ -59,7 +59,7 @@ class AliasManagerTest extends \PHPUnit_Framework_TestCase
         $original = 'Statical\\Tests\\Fixtures\\Foo';
         $alias = 'Foo';
         $this->aliasManager->add($original, $alias);
-        $this->aliasManager->addNamespace($alias, 'Bar\\Baz');
+        $this->aliasManager->addNamespace($alias, array('Bar\\Baz'));
 
         $this->assertEquals(null,
             $this->aliasManager->getNamespaceAlias('Bar\\Foo'));

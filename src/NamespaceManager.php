@@ -26,19 +26,18 @@
     * Adds a namespace
     *
     * @param string $alias
-    * @param mixed $namespace Either a string or array of namespaces
+    * @param string[] $namespace
     */
-    public function add($alias, $namespace)
+    public function add($alias, array $namespace)
     {
         $alias = Input::checkAlias($alias);
-        $namespace = (array) $namespace;
         $props = $this->getNamespace($alias, true);
 
         foreach ($namespace as $ns) {
             $group = $this->getNamespaceGroup($ns);
 
             if ('any' === $group) {
-                $props = $this->setGroupAny();
+                $props = array('any' => true);
                 break;
             } else {
                 // trim trailing * from base pattern
@@ -49,34 +48,6 @@
 
         $this->setNamespace($alias, $props);
     }
-
-    /**
-    * Adds a namespace group
-    *
-    * @param string $group
-    * @param string $alias
-    * @param mixed $namespace string, array of namespaces or null
-    */
-    public function addGroup($group, $alias, $namespace)
-    {
-        $group = Input::checkNamespaceGroup($group);
-        $alias = Input::checkAlias($alias);
-
-        if ('any' === $group) {
-            $props = $this->setGroupAny();
-        } else {
-            $props = $this->getNamespace($alias, true);
-            $namespace = (array) $namespace;
-
-            foreach ($namespace as $ns) {
-                $namespace = Input::checkNamespace($ns);
-                $props[$group][] = $ns;
-            }
-        }
-
-        $this->setNamespace($alias, $props);
-    }
-
 
     /**
     * Returns true if a matching namespace is found.
@@ -210,19 +181,6 @@
         } else {
             $group = 'root';
         }
-
-        return $group;
-    }
-
-    /**
-    * Sets a namespace property group to any.
-    *
-    * @return array
-    */
-    protected function setGroupAny()
-    {
-        $group = $this->getDefaultGroups();
-        $group['any'] = true;
 
         return $group;
     }

@@ -75,23 +75,11 @@
     * Adds a namespace
     *
     * @param string $alias
-    * @param mixed $namespace Either a string or array of namespaces
+    * @param string[] $namespace
     */
-    public function addNamespace($alias, $namespace)
+    public function addNamespace($alias, array $namespace)
     {
         $this->namespacer->add($alias, $namespace);
-    }
-
-    /**
-    * Adds a namespace group
-    *
-    * @param string $group
-    * @param string $alias
-    * @param mixed $namespace string, array of namespaces or null
-    */
-    public function addNamespaceGroup($group, $alias, $namespace)
-    {
-        $this->namespacer->addGroup($group, $alias, $namespace);
     }
 
     /**
