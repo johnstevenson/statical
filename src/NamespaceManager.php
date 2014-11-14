@@ -40,8 +40,8 @@
                 $props = array('any' => true);
                 break;
             } else {
-                // trim trailing * from base pattern
-                $ns = 'base' === $group ? rtrim($ns, '*') : $ns;
+                // trim trailing * from path pattern
+                $ns = 'path' === $group ? rtrim($ns, '*') : $ns;
                 $props[$group][] = $ns;
             }
         }
@@ -83,7 +83,7 @@
             return true;
         }
 
-        foreach (array('base', 'root') as $group) {
+        foreach (array('path', 'name') as $group) {
             if ($this->matchClass($props[$group], $group, $alias, $class)) {
                 return true;
             }
@@ -106,7 +106,7 @@
 
         foreach ($array as $test) {
 
-            if ('base' === $group) {
+            if ('path' === $group) {
                 $match = 0 === strpos($class, $test);
             } else {
                 $match = $test.'\\'.$alias === $class;
@@ -176,10 +176,10 @@
             if ('*' === $namespace) {
                 $group = 'any';
             } else {
-                $group = 'base';
+                $group = 'path';
             }
         } else {
-            $group = 'root';
+            $group = 'name';
         }
 
         return $group;
@@ -194,8 +194,8 @@
     {
         return array(
             'any' => false,
-            'base' => array(),
-            'root' => array()
+            'path' => array(),
+            'name' => array()
         );
     }
  }

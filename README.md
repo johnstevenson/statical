@@ -60,8 +60,8 @@ By default, each static proxy is registered in the global namespace. This means 
 you can include a *use* statement in each file: `use \Foo as Foo;`.
 
 **Statical** includes a powerful namespacing feature which allows you to add namespace patterns for
-an alias. For example `addNamespace('Foo', 'App\\Library\\*')` allows you to call `Foo` in any
-*App\\Library\\...* namespace.
+an alias. For example `addNamespaceGroup('path', Foo', 'App\\Library')` allows you to call `Foo` in any
+*App\\Library* or descendant namespace.
 
 ### Features
 A few features in no particular order. Please see the [documentation][wiki] for more information.

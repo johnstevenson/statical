@@ -71,14 +71,14 @@ class NamespaceTest extends \PHPUnit_Framework_TestCase
     * Test Foo can be called in Statical\\Tests namespace
     *
     */
-    public function testAddNamespaceGroupRoot()
+    public function testAddNamespaceGroupName()
     {
         $alias = 'Foo';
         $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
         $instance = new \Statical\Tests\Fixtures\Foo();
 
         $this->manager->addProxyInstance($alias, $proxy, $instance);
-        $this->manager->addNamespaceGroup('root', 'Foo', 'Statical\\Tests');
+        $this->manager->addNamespaceGroup('name', 'Foo', 'Statical\\Tests');
 
         $expected = get_class($instance);
         $this->assertEquals($expected, Foo::getClass());
@@ -88,14 +88,14 @@ class NamespaceTest extends \PHPUnit_Framework_TestCase
     * Test Foo can be called in Statical\\* namespace
     *
     */
-    public function testAddNamespaceGroupBase()
+    public function testAddNamespaceGroupPath()
     {
         $alias = 'Foo';
         $proxy = 'Statical\\Tests\\Fixtures\\FooProxy';
         $instance = new \Statical\Tests\Fixtures\Foo();
 
         $this->manager->addProxyInstance($alias, $proxy, $instance);
-        $this->manager->addNamespaceGroup('base', 'Foo', 'Statical');
+        $this->manager->addNamespaceGroup('path', 'Foo', 'Statical');
 
         $expected = get_class($instance);
         $this->assertEquals($expected, Foo::getClass());

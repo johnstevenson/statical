@@ -115,7 +115,7 @@
     */
     protected static function checkGroup($value)
     {
-        $groups = array('any', 'base', 'root');
+        $groups = array('any', 'path', 'name');
 
         if (!in_array($value, $groups, true)) {
             throw new \InvalidArgumentException('Invalid namespace group.');
@@ -164,7 +164,7 @@
         } else {
             foreach ($namespace as &$value) {
                 $value = static::checkNamespace($value);
-                if ('base' === $group) {
+                if ('path' === $group) {
                     $value .= '\\*';
                 }
             }

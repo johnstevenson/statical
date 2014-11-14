@@ -72,22 +72,22 @@ class NamespaceManagerTest extends \PHPUnit_Framework_TestCase
     * Test addNamespace adds an item to root
     *
     */
-    public function testAddRoot()
+    public function testAddName()
     {
         $namespace = Input::formatNamespace('Bar\\Baz');
         $this->namespaceManager->add('Foo', $namespace);
-        $this->assertContains('Bar\\Baz', $this->namespaceManager->namespaces['Foo']['root']);
+        $this->assertContains('Bar\\Baz', $this->namespaceManager->namespaces['Foo']['name']);
     }
 
     /**
     * Test addNamespace adds trimmed namespace with trailing * to base
     *
     */
-    public function testAddBase()
+    public function testAddPath()
     {
         $namespace = Input::formatNamespace('Bar\\Baz\\*');
         $this->namespaceManager->add('Foo', $namespace);
-        $this->assertContains('Bar\\Baz\\', $this->namespaceManager->namespaces['Foo']['base']);
+        $this->assertContains('Bar\\Baz\\', $this->namespaceManager->namespaces['Foo']['path']);
     }
 
     /**
@@ -109,9 +109,9 @@ class NamespaceManagerTest extends \PHPUnit_Framework_TestCase
     public function testAddMultiple()
     {
         $this->namespaceManager->add('Foo', array('Bar\\Baz\\*', 'Bar\\Barry\\*'));
-        $this->assertContains('Bar\\Baz\\', $this->namespaceManager->namespaces['Foo']['base']);
-        $this->assertContains('Bar\\Barry\\', $this->namespaceManager->namespaces['Foo']['base']);
-        $this->assertCount(2, $this->namespaceManager->namespaces['Foo']['base']);
+        $this->assertContains('Bar\\Baz\\', $this->namespaceManager->namespaces['Foo']['path']);
+        $this->assertContains('Bar\\Barry\\', $this->namespaceManager->namespaces['Foo']['path']);
+        $this->assertCount(2, $this->namespaceManager->namespaces['Foo']['path']);
     }
 
     /**
@@ -122,11 +122,11 @@ class NamespaceManagerTest extends \PHPUnit_Framework_TestCase
     {
         $namespace = Input::formatNamespace('Bar\\Baz\\*');
         $this->namespaceManager->add('Foo', $namespace);
-        $this->assertContains('Bar\\Baz\\', $this->namespaceManager->namespaces['Foo']['base']);
+        $this->assertContains('Bar\\Baz\\', $this->namespaceManager->namespaces['Foo']['path']);
 
         $this->namespaceManager->add('Foo', $namespace);
-        $this->assertContains('Bar\\Baz\\', $this->namespaceManager->namespaces['Foo']['base']);
-        $this->assertCount(1, $this->namespaceManager->namespaces['Foo']['base']);
+        $this->assertContains('Bar\\Baz\\', $this->namespaceManager->namespaces['Foo']['path']);
+        $this->assertCount(1, $this->namespaceManager->namespaces['Foo']['path']);
     }
 
     /**
@@ -138,7 +138,7 @@ class NamespaceManagerTest extends \PHPUnit_Framework_TestCase
         $alias = 'Foo';
         $namespaceString = 'Bar\\Baz';
         $group = $this->namespaceManager->getDefaultGroups();
-        $group['root'][] = $namespaceString;
+        $group['name'][] = $namespaceString;
 
         $namespace = Input::formatNamespace($namespaceString);
         $this->namespaceManager->add($alias, $namespace);
@@ -178,13 +178,13 @@ class NamespaceManagerTest extends \PHPUnit_Framework_TestCase
         $value = '*';
         $this->assertEquals('any', $this->namespaceManager->getNamespaceGroup($value));
 
-        // Check namespace returns root
+        // Check namespace returns name
         $value = 'Foo\\Bar';
-        $this->assertEquals('root', $this->namespaceManager->getNamespaceGroup($value));
+        $this->assertEquals('name', $this->namespaceManager->getNamespaceGroup($value));
 
-        // Check namespace with trailing \* returns base
+        // Check namespace with trailing \* returns path
         $value = 'Foo\\Bar\\*';
-        $this->assertEquals('base', $this->namespaceManager->getNamespaceGroup($value));
+        $this->assertEquals('path', $this->namespaceManager->getNamespaceGroup($value));
     }
 
     /**

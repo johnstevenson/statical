@@ -146,7 +146,7 @@
     * are formatted as follows:
     *
     *   'App'     - the alias can be called in the App namespace
-    *   'App\\*'  - the alias can be called in the App and any App\... namespace
+    *   'App\\*'  - the alias can be called in the App or descendant namespaces
     *   '*'       - the alias can be called in any namespace
     *
     * @param string $alias
@@ -166,8 +166,8 @@
     *
     * The group can be one of the following:
     *
-    *   'root'  - the alias can be called in the App namespace
-    *   'base'  - the alias can be called in the App and any App\... namespace
+    *   'name'  - the alias can be called in the $namespace
+    *   'path'  - the alias can be called in the $namespace and any descendants
     *   'any'   - the alias can be called in any namespace
     *
     * Namespace can either be a single string value, an array of values, or
